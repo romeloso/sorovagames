@@ -5,7 +5,6 @@ test.describe('Mis Juegos E2E', () => {
     await page.goto('/')
     await page.evaluate(() => {
       localStorage.clear()
-      sessionStorage.setItem('sorova.lobby-intro.seen', '1')
     })
     await page.reload()
 
@@ -45,7 +44,6 @@ test.describe('Mis Juegos E2E', () => {
     await page.goto('/superadmin')
     await page.evaluate(() => {
       localStorage.clear()
-      sessionStorage.setItem('sorova.lobby-intro.seen', '1')
     })
     await page.reload()
 

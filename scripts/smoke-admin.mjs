@@ -9,7 +9,6 @@ async function main() {
   await page.goto(base)
   await page.evaluate(() => {
     localStorage.clear()
-    sessionStorage.setItem('sorova.lobby-intro.seen', '1')
   })
   await page.reload()
 
