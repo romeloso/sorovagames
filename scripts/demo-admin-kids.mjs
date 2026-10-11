@@ -15,7 +15,7 @@ async function main() {
   await page.evaluate(() => localStorage.clear())
   await page.reload()
 
-  await page.getByRole('button', { name: /Acceso superadministrador/i }).click()
+  await page.getByRole('button', { name: 'Sorova Games' }).click()
   await page.getByPlaceholder('••••').fill('4716')
   await page.getByRole('button', { name: 'Entrar' }).click()
   await page.waitForURL('**/panel')
