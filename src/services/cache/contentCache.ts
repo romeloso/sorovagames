@@ -22,15 +22,6 @@ export function getCachedAdminReadingLessons(
   return lessons
 }
 
-export function getCachedTopicsForAge(
-  topics: StudyTopic[],
-  age: number | null,
-  subjectId?: GameId,
-  grade: SchoolGrade | null = null,
-): StudyTopic[] {
-  return getCachedTopicsForLearner(topics, { age, grade }, subjectId)
-}
-
 export function getCachedTopicsForLearner(
   topics: StudyTopic[],
   learner: LearnerContext,
@@ -48,8 +39,3 @@ export function invalidateContentCaches() {
   lessonCache.invalidate()
   topicCache.invalidate()
 }
-
-export const contentCacheStats = () => ({
-  lessons: lessonCache.size(),
-  topics: topicCache.size(),
-})

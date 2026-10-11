@@ -1,5 +1,5 @@
 /**
- * Load test del cliente Mis Juegos.
+ * Load test del cliente Sorova Games.
  *
  * Escenario A — CPU: filtrar topics/lecciones + stringify estado liviano.
  * Escenario B — Persistencia: stringify estado con avatares base64 grandes (localStorage).
@@ -200,7 +200,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     environment: 'node-client-simulation',
     note:
-      'Simula carga de CPU/memoria del cliente. No mide red/Supabase. Para multi-familia usar k6 contra API cuando exista backend.',
+      'Simula carga de CPU y memoria del cliente. No mide la red ni PostgreSQL.',
     thresholds: {
       cpuSlowP95Ms: SLOW_P95_MS,
       heavySaveP95Ms: HEAVY_SAVE_P95_MS,
@@ -225,8 +225,8 @@ async function main() {
         : `CPU/filtrado: se pone lenta ~${slowAt.users} usuarios (${slowAt.reason}).`,
       heavySlowAt == null
         ? 'Persistencia con avatares: estable en el rango probado.'
-        : `Persistencia: se degrada ~${heavySlowAt.profiles} perfiles con fotos base64 (${heavySlowAt.reason}). Mitigar con galería por URL/Supabase Storage y debounce de save.`,
-      'Cuellos reales esperados en producción: localStorage 5–10MB, queries sin índice en Supabase, y rate limits de API.',
+        : `Persistencia: se degrada ~${heavySlowAt.profiles} perfiles con fotos base64 (${heavySlowAt.reason}). Las fotos se comprimen en un worker y el guardado va diferido.`,
+      'La copia local sigue limitada por localStorage. El documento de producción vive en PostgreSQL.',
     ].join(' '),
   }
 

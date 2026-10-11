@@ -93,6 +93,7 @@ src/
   context/         # estado global (perfiles, rol, material)
   components/      # UI reutilizable y shell de juego
   games/           # módulos por juego
-  pages/           # pantallas (incluye /admin)
-  supabase/        # cliente + SQL/RLS preparado
+  pages/           # pantallas
+
+server/            # API y esquema PostgreSQL (Railway)
 ```

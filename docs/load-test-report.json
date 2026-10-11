@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-10-04T02:49:33.981Z",
   "environment": "node-client-simulation",
-  "note": "Simula carga de CPU/memoria del cliente. No mide red/Supabase. Para multi-familia usar k6 contra API cuando exista backend.",
+  "note": "Simula carga de CPU y memoria del cliente. No mide la red ni PostgreSQL.",
   "thresholds": {
     "cpuSlowP95Ms": 100,
     "heavySaveP95Ms": 50,
@@ -148,5 +148,5 @@
       }
     ]
   },
-  "recommendation": "CPU/filtrado: ≥400 usuarios concurrentes simulados sin cruzar p95 100ms. Persistencia: se degrada ~20 perfiles con fotos base64 (payload ~4691.4KB supera soft-limit 4.5MB de localStorage). Mitigar con galería por URL/Supabase Storage y debounce de save. Cuellos reales esperados en producción: localStorage 5–10MB, queries sin índice en Supabase, y rate limits de API."
+  "recommendation": "CPU/filtrado: ≥400 usuarios concurrentes simulados sin cruzar p95 100ms. Persistencia: se degrada ~20 perfiles con fotos base64 (payload ~4691.4KB supera soft-limit 4.5MB de localStorage). Las fotos se comprimen en un worker y el guardado va diferido. La copia local sigue limitada por localStorage. El documento de producción vive en PostgreSQL."
 }
