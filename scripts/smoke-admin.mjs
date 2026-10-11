@@ -16,7 +16,7 @@ async function main() {
   await page.getByLabel('Código del niño').waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/avatars_profiles.png', fullPage: true })
 
-  await page.getByRole('button', { name: 'Sorova Games' }).click()
+  await page.getByRole('button', { name: 'Sorova Games' }).first().click()
   await page.waitForURL('**/superadmin')
   await page.getByPlaceholder('••••').fill('4716')
   await page.getByRole('button', { name: 'Entrar' }).click()
