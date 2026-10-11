@@ -13,14 +13,14 @@ export function TopBar({
   backLabel?: string
 }) {
   const navigate = useNavigate()
-  const { state, toggleSound, clearActiveProfile } = useApp()
+  const { state, toggleSound, clearActiveProfile, sessionRole } = useApp()
 
   return (
     <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
       <button
         type="button"
         className="text-left transition hover:opacity-90"
-        onClick={() => navigate('/')}
+        onClick={() => navigate(sessionRole === 'superadmin' ? '/panel' : '/superadmin')}
         aria-label="Sorova Games"
       >
         <BrandLogo size="sm" />

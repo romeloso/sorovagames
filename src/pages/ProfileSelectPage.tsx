@@ -85,9 +85,6 @@ export function ProfileSelectPage() {
         <Button variant="secondary" onClick={() => navigate('/tutor')}>
           Acceso tutor
         </Button>
-        <Button variant="secondary" onClick={() => navigate('/superadmin')}>
-          Acceso superadministrador
-        </Button>
       </div>
     </PageShell>
   )
