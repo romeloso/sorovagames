@@ -1,3 +1,5 @@
+import type { AvatarLook } from '@/domain/avatarLook'
+
 export type GameStatus = 'available' | 'coming_soon' | 'locked'
 
 export type GameId =
@@ -39,6 +41,8 @@ export interface ChildProfileSeed {
   name: string
   avatar: string
   avatarImage: string
+  /** Avatar animado creado por el niño. Si existe, se muestra en lugar de la foto. */
+  avatarLook?: AvatarLook | null
   accent: string
   birthDate?: string | null
   grade?: SchoolGrade | null

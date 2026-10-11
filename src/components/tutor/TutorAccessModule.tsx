@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { useApp } from '@/context/AppContext'
 
@@ -10,7 +10,8 @@ type Mode = 'login' | 'register' | 'issued'
 
 export function TutorAccessModule() {
   const { isTutor, loginTutor, registerTutor } = useApp()
-  const [mode, setMode] = useState<Mode>('login')
+  const [params] = useSearchParams()
+  const [mode, setMode] = useState<Mode>(params.get('cuenta') === 'nueva' ? 'register' : 'login')
   const [code, setCode] = useState('')
   const [tutorName, setTutorName] = useState('')
   const [issuedCode, setIssuedCode] = useState<string | null>(null)

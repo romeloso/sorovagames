@@ -493,6 +493,7 @@ export function AdminPanelPage() {
                       <Avatar
                         name={profile.name}
                         src={profile.avatarImage}
+                        look={profile.avatarLook}
                         accent={profile.accent}
                         size="md"
                         focus="center"
@@ -845,6 +846,7 @@ export function AdminPanelPage() {
                     <Avatar
                       name={profile.name}
                       src={profile.avatarImage}
+                      look={profile.avatarLook}
                       accent={profile.accent}
                       size="md"
                       focus="center"

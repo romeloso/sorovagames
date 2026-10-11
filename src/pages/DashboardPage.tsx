@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { GameCard } from '@/components/game/GameCard'
 import { TopBar } from '@/components/layout/TopBar'
 import { Avatar } from '@/components/profile/Avatar'
+import { AvatarStudio } from '@/components/profile/AvatarStudio'
 import { AvatarUploader } from '@/components/profile/AvatarUploader'
 import { Button } from '@/components/ui/Button'
 import { PageShell } from '@/components/ui/PageShell'
@@ -28,10 +29,11 @@ import type { GameId, GameLevelMeta, LessonDefinition, ReadingStats, TypingStats
 
 export function DashboardPage() {
   const navigate = useNavigate()
-  const { ready, activeProfile, sessionRole, getGameProgress, state, updateProfileAvatar, updateChildProfile } =
+  const { ready, activeProfile, sessionRole, getGameProgress, state, updateProfileAvatar, updateChildProfile, saveAvatarLook } =
     useApp()
   const [editingAvatar, setEditingAvatar] = useState(false)
   const [editingBirthDate, setEditingBirthDate] = useState(false)
+  const childSession = sessionRole === 'child'
 
   const birthAge = ageFromBirthDate(activeProfile?.birthDate)
   const grade = activeProfile?.grade ?? null
@@ -105,6 +107,7 @@ export function DashboardPage() {
             <Avatar
               name={activeProfile.name}
               src={activeProfile.avatarImage}
+              look={activeProfile.avatarLook}
               accent={activeProfile.accent}
               size="lg"
               focus="center"
@@ -115,7 +118,7 @@ export function DashboardPage() {
               className="!min-h-10"
               onClick={() => setEditingAvatar((value) => !value)}
             >
-              {editingAvatar ? 'Cerrar' : 'Cambiar foto'}
+              {editingAvatar ? 'Cerrar' : childSession ? 'Crear mi avatar' : 'Cambiar foto'}
             </Button>
           </div>
           <div className="flex-1 space-y-3">
@@ -131,37 +134,30 @@ export function DashboardPage() {
               label={`${formatNumber(xpInfo.current)} / ${formatNumber(xpInfo.needed)} XP`}
               colorClassName="bg-coral"
             />
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                size="md"
-                variant="secondary"
-                className="!min-h-10"
-                onClick={() => setEditingBirthDate((value) => !value)}
-              >
-                {editingBirthDate ? 'Cerrar fecha' : 'Mi fecha de nacimiento'}
-              </Button>
-              {!activeProfile.birthDate ? (
-                <span className="text-sm font-bold text-coral">
-                  Pon tu fecha para adaptar los temas a tu edad
-                </span>
-              ) : null}
-            </div>
+            {childSession ? null : (
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="md"
+                  variant="secondary"
+                  className="!min-h-10"
+                  onClick={() => setEditingBirthDate((value) => !value)}
+                >
+                  {editingBirthDate ? 'Cerrar fecha' : 'Mi fecha de nacimiento'}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
-        {editingBirthDate ? (
+        {editingBirthDate && !childSession ? (
           <div className="mt-5 rounded-[1.5rem] bg-sand/60 p-4 sm:p-5">
             <h2 className="mb-3 font-display text-xl font-bold">Fecha de nacimiento</h2>
             <p className="mb-3 text-sm font-semibold text-ink-soft">
-              {sessionRole === 'child'
-                ? 'Tu tutor guarda esta fecha. Con ella se crea tu código de acceso.'
-                : 'Con tu edad te mostramos temas y material a tu nivel.'}
+              Con tu edad te mostramos temas y material a tu nivel.
             </p>
             <input
               type="date"
-              className="w-full max-w-xs rounded-xl border-2 border-ink/10 px-3 py-2 font-bold disabled:opacity-70"
-              value={activeProfile.birthDate ?? ''}
-              disabled={sessionRole === 'child'}
+              className="w-full max-w-xs rounded-xl border-2 border-ink/10 px-3 py-2 font-bold"
               onChange={(e) => {
                 updateChildProfile(activeProfile.id, {
                   birthDate: e.target.value || null,
@@ -171,7 +167,16 @@ export function DashboardPage() {
           </div>
         ) : null}
 
-        {editingAvatar ? (
+        {editingAvatar && childSession ? (
+          <AvatarStudio
+            look={activeProfile.avatarLook}
+            onSave={(look) => {
+              saveAvatarLook(activeProfile.id, look)
+              setEditingAvatar(false)
+            }}
+          />
+        ) : null}
+        {editingAvatar && !childSession ? (
           <div className="mt-5 rounded-[1.5rem] bg-sand/60 p-4 text-center sm:p-5">
             <h2 className="mb-3 font-display text-xl font-bold">Actualizar foto de perfil</h2>
             <AvatarUploader
