@@ -53,7 +53,7 @@ Rendimiento, caché, índices y rate limiting: ver `docs/PERFORMANCE.md`.
 Hay tres roles. El niño no elige una tarjeta: escribe su código.
 
 1. **Niño.** Código = nombre en mayúsculas, sin tildes, más la fecha en día, mes y año de dos cifras. `SOPHIA041217` es Sophia, 4 de diciembre de 2017.
-2. **Tutor.** Crea esos perfiles y consulta el progreso de sus niños. En una instalación nueva, la cuenta de demostración es `FAMILIASOROVA`.
+2. **Tutor.** Puede registrarse con su nombre, entrar con el código que recibe y registrar a su familia. En una instalación nueva, la cuenta de demostración es `FAMILIASOROVA`.
 3. **Superadministrador.** PIN `4716`. Crea, activa, cambia el código y elimina cada tutor junto con los perfiles a su cargo.
 
 El código del niño identifica el perfil en esta instalación. No es una contraseña secreta: quien conoce el nombre y la fecha puede formarlo. El superadministrador entrega a cada tutor un código distinto.
@@ -61,7 +61,7 @@ El código del niño identifica el perfil en esta instalación. No es una contra
 ## Tutor y superadministrador
 
 1. En el inicio, el tutor toca **Acceso tutor**. El superadministrador toca el logotipo de Sorova Games
-2. El tutor escribe su código. El superadministrador escribe el PIN `4716`
+2. El tutor se registra o escribe su código. El superadministrador escribe el PIN `4716`
 3. Pestaña **Tutores** (solo superadministrador): cuentas de madres, padres o tutores
 4. Pestaña **Niños**: nombre, fecha y código de acceso
 5. Pestaña **Temas**: temas por materia con rango de edad
