@@ -80,6 +80,7 @@ export function AdminPanelPage() {
     addTutor,
     setTutorActive,
     regenerateTutorCode,
+    removeTutor,
     addWordMaterial,
     addPassageMaterial,
     removeWordMaterial,
@@ -104,6 +105,7 @@ export function AdminPanelPage() {
   const [childAvatarSrc, setChildAvatarSrc] = useState('')
   const [childTutorId, setChildTutorId] = useState('')
   const [tutorName, setTutorName] = useState('')
+  const [confirmTutorId, setConfirmTutorId] = useState<string | null>(null)
   const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
 
   const [topicSubject, setTopicSubject] = useState<GameId>('reading')
@@ -209,6 +211,7 @@ export function AdminPanelPage() {
             <h2 className="font-display text-2xl font-bold">Nuevo tutor</h2>
             <p className="mt-1 text-sm font-semibold text-ink-soft">
               El tutor crea los perfiles de sus niños y ve solo su progreso. Comparte el código con esa familia.
+              Eliminar la cuenta también quita esos perfiles y su progreso.
             </p>
             <div className="mt-4 space-y-3">
               <input
@@ -268,7 +271,66 @@ export function AdminPanelPage() {
                       >
                         Nuevo código
                       </Button>
+                      <Button
+                        size="md"
+                        variant="danger"
+                        aria-label={`Eliminar cuenta de ${tutor.name}`}
+                        onClick={() => setConfirmTutorId(tutor.id)}
+                      >
+                        Eliminar cuenta
+                      </Button>
                     </div>
+                    {confirmTutorId === tutor.id ? (
+                      <div className="mt-3 rounded-2xl bg-coral/15 p-3">
+                        <p className="text-sm font-bold text-ink">
+                          {children.length === 0
+                            ? `Se eliminará la cuenta de ${tutor.name}. No tiene perfiles a cargo.`
+                            : `Se eliminará la cuenta de ${tutor.name} y ${children.length} ${
+                                children.length === 1 ? 'perfil' : 'perfiles'
+                              }, con su progreso.`}
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Button
+                            size="md"
+                            variant="danger"
+                            aria-label={`Sí, eliminar a ${tutor.name}`}
+                            onClick={() => {
+                              const result = removeTutor(tutor.id)
+                              setConfirmTutorId(null)
+                              if (!result.ok) {
+                                flash(result.error ?? 'No se pudo eliminar la cuenta.')
+                                return
+                              }
+                              if (
+                                selectedChildId &&
+                                result.removedChildIds?.includes(selectedChildId)
+                              ) {
+                                setSelectedChildId(null)
+                              }
+                              if (childTutorId === tutor.id) setChildTutorId('')
+                              const removed = result.removedChildren ?? 0
+                              flash(
+                                removed === 0
+                                  ? `Se eliminó la cuenta de ${result.name}.`
+                                  : `Se eliminó la cuenta de ${result.name} y ${removed} ${
+                                      removed === 1 ? 'perfil' : 'perfiles'
+                                    }.`,
+                              )
+                            }}
+                          >
+                            Sí, eliminar
+                          </Button>
+                          <Button
+                            size="md"
+                            variant="secondary"
+                            aria-label={`Cancelar eliminación de ${tutor.name}`}
+                            onClick={() => setConfirmTutorId(null)}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      </div>
+                    ) : null}
                   </li>
                 )
               })}

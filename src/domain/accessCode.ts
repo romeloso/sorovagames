@@ -1,4 +1,4 @@
-import type { AppState, ChildProfile, SessionRole } from '@/types'
+import type { AppState, ChildProfile, SessionRole, TutorAccount } from '@/types'
 
 /** Nombre en mayúsculas, sin tildes ni espacios: «María José» → MARIAJOSE. */
 export function normalizePersonName(name: string) {
@@ -66,4 +66,40 @@ export function ownsChild(state: Pick<AppState, 'sessionRole' | 'activeTutorId' 
   if (state.sessionRole === 'superadmin') return true
   if (state.sessionRole === 'tutor') return profile.tutorId === state.activeTutorId
   return state.sessionRole === 'child' && state.activeProfileId === profile.id
+}
+
+type TutorRemovalState = {
+  sessionRole: SessionRole
+  tutors: Record<string, TutorAccount>
+  profiles: Record<string, { id: string; tutorId: string | null }>
+  progress: Record<string, unknown>
+  activeProfileId: string | null
+  activeTutorId: string | null
+}
+
+/** Quita la cuenta y los perfiles cuyo tutor es esa cuenta, con su progreso. */
+export function removeTutorAccount<T extends TutorRemovalState>(state: T, tutorId: string): T {
+  if (state.sessionRole !== 'superadmin' || !state.tutors[tutorId]) return state
+  const removedIds = new Set(
+    Object.values(state.profiles)
+      .filter((profile) => profile.tutorId === tutorId)
+      .map((profile) => profile.id),
+  )
+  const profiles = { ...state.profiles }
+  const progress = { ...state.progress }
+  for (const id of removedIds) {
+    delete profiles[id]
+    delete progress[id]
+  }
+  const tutors = { ...state.tutors }
+  delete tutors[tutorId]
+  return {
+    ...state,
+    tutors,
+    profiles,
+    progress,
+    activeProfileId:
+      state.activeProfileId && removedIds.has(state.activeProfileId) ? null : state.activeProfileId,
+    activeTutorId: state.activeTutorId === tutorId ? null : state.activeTutorId,
+  }
 }

@@ -17,6 +17,7 @@ import {
   normalizeAccessCode,
   normalizeSessionRole,
   ownsChild,
+  removeTutorAccount,
 } from '@/domain/accessCode'
 import { evaluateAchievements } from '@/data/achievements'
 import { getAvailableReadingLevels } from '@/data/games/reading/levels'
@@ -87,6 +88,13 @@ interface AppContextValue {
   addTutor: (name: string) => TutorAccount
   setTutorActive: (tutorId: string, active: boolean) => void
   regenerateTutorCode: (tutorId: string) => string | null
+  removeTutor: (tutorId: string) => {
+    ok: boolean
+    error?: string
+    name?: string
+    removedChildren?: number
+    removedChildIds?: string[]
+  }
   toggleSound: () => void
   getGameProgress: (gameId: GameId, profileId?: string) => GameProgress | null
   completeLesson: (result: LessonSessionResult) => CompleteLessonResponse | null
@@ -442,6 +450,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     })
     return accessCode
   }, [state.sessionRole, state.tutors])
+
+  const removeTutor = useCallback((tutorId: string) => {
+    if (state.sessionRole !== 'superadmin') {
+      return { ok: false, error: 'Solo el superadministrador elimina cuentas de tutor.' }
+    }
+    const tutor = state.tutors[tutorId]
+    if (!tutor) return { ok: false, error: 'Esa cuenta ya no existe.' }
+    const removedChildIds = Object.values(state.profiles)
+      .filter((profile) => profile.tutorId === tutorId)
+      .map((profile) => profile.id)
+    setState((prev) => removeTutorAccount(prev, tutorId))
+    return { ok: true, name: tutor.name, removedChildren: removedChildIds.length, removedChildIds }
+  }, [state.profiles, state.sessionRole, state.tutors])
 
   const toggleSound = useCallback(() => {
     setState((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }))
@@ -901,6 +922,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addTutor,
       setTutorActive,
       regenerateTutorCode,
+      removeTutor,
       toggleSound,
       getGameProgress,
       completeLesson,
@@ -936,6 +958,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addTutor,
       setTutorActive,
       regenerateTutorCode,
+      removeTutor,
       toggleSound,
       getGameProgress,
       completeLesson,

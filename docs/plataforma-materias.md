@@ -45,7 +45,7 @@ No enlaces archivos que no existan en el proyecto. Si falta una grabación, deja
 
 La fuente de verdad en ejecución sigue siendo el documento JSON de Railway (`app_state`) y la copia local. `server/subjects-schema.sql` describe un modelo relacional futuro. No se aplica solo al desplegar.
 
-Hay tres roles en la misma instalación: niño, tutor y superadministrador. El niño entra con su código. El tutor solo ve los perfiles que creó. El superadministrador crea las cuentas de tutor y ve a todos los niños. El documento JSON sigue siendo compartido por la instalación; el código del niño se arma con el nombre y la fecha, así que no funciona como una contraseña.
+Hay tres roles en la misma instalación: niño, tutor y superadministrador. El niño entra con su código. El tutor solo ve los perfiles que creó. El superadministrador crea las cuentas de tutor, puede eliminar una cuenta con los perfiles a su cargo y ve a todos los niños. El documento JSON sigue siendo compartido por la instalación; el código del niño se arma con el nombre y la fecha, así que no funciona como una contraseña.
 
 ## Pendiente
 
