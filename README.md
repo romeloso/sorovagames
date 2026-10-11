@@ -52,7 +52,7 @@ Rendimiento, caché, índices y rate limiting: ver `docs/PERFORMANCE.md`.
 
 Hay tres roles. El niño no elige una tarjeta: escribe su código.
 
-1. **Niño.** Código = nombre en mayúsculas, sin tildes, más la fecha en día, mes y año de dos cifras. `SOPHIA041217` es Sophia, 4 de diciembre de 2017.
+1. **Niño.** Código = nombre en mayúsculas, sin tildes, más la fecha en día, mes y año de dos cifras. `SOPHIA041217` es Sophia, 4 de diciembre de 2017. No cambia su fecha: la guarda el tutor. En su panel crea un avatar animado.
 2. **Tutor.** Puede registrarse con su nombre y entrar con su código directo al panel, donde registra a su familia. En una instalación nueva, la cuenta de demostración es `FAMILIASOROVA`.
 3. **Superadministrador.** PIN `4716`. Crea, activa, cambia el código y elimina cada tutor junto con los perfiles a su cargo.
 

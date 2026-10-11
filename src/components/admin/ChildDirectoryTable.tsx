@@ -235,6 +235,7 @@ export function ChildDirectoryTable({
                           <Avatar
                             name={profile.name}
                             src={profile.avatarImage}
+                            look={profile.avatarLook}
                             accent={profile.accent}
                             size="sm"
                             focus="center"

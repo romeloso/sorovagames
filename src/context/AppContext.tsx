@@ -10,6 +10,7 @@ import {
 import { APP_CONFIG } from '@/config/app'
 import { seedAvatarLibraryItems } from '@/config/avatars'
 import { ADMIN_CONFIG, DEMO_TUTOR, PROFILE_SEEDS } from '@/config/profiles'
+import { sanitizeAvatarLook, type AvatarLook } from '@/domain/avatarLook'
 import {
   canManageProfiles,
   childAccessCode,
@@ -153,6 +154,7 @@ interface AppContextValue {
   addAvatarToLibrary: (input: { label: string; src: string }) => AvatarLibraryItem
   removeAvatarFromLibrary: (id: string) => void
   updateProfileAvatar: (profileId: string, avatarImage: string) => void
+  saveAvatarLook: (profileId: string, look: AvatarLook) => void
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -187,6 +189,7 @@ function migrateState(raw: AppState | null): AppState {
           ? savedAvatar
           : (seed?.avatarImage ?? `/avatars/photo/${id}-1.jpg`),
       accent: profile.accent ?? seed?.accent ?? '#6366F1',
+      avatarLook: sanitizeAvatarLook(profile.avatarLook),
     }
   }
 
@@ -912,6 +915,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }))
   }, [])
 
+  const saveAvatarLook = useCallback((profileId: string, look: AvatarLook) => {
+    const clean = sanitizeAvatarLook(look)
+    if (!clean) return
+    setState((prev) => {
+      const profile = prev.profiles[profileId]
+      if (!profile || !ownsChild(prev, profile)) return prev
+      return {
+        ...prev,
+        profiles: {
+          ...prev.profiles,
+          [profileId]: {
+            ...profile,
+            avatarLook: clean,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      }
+    })
+  }, [])
+
   const updateProfileAvatar = useCallback((profileId: string, avatarImage: string) => {
     setState((prev) => {
       const profile = prev.profiles[profileId]
@@ -923,6 +946,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           [profileId]: {
             ...profile,
             avatarImage,
+            avatarLook: null,
             updatedAt: new Date().toISOString(),
           },
         },
@@ -968,6 +992,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addAvatarToLibrary,
       removeAvatarFromLibrary,
       updateProfileAvatar,
+      saveAvatarLook,
     }),
     [
       ready,
@@ -1005,6 +1030,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addAvatarToLibrary,
       removeAvatarFromLibrary,
       updateProfileAvatar,
+      saveAvatarLook,
     ],
   )
 

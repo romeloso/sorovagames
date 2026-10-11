@@ -130,6 +130,55 @@
   animation: sorova-pulse-soft 1.6s ease-in-out infinite;
 }
 
+@keyframes sorova-avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes sorova-avatar-blink {
+  0%,
+  46%,
+  52%,
+  100% {
+    transform: scaleY(1);
+  }
+  49% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes sorova-avatar-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.avatar-bob {
+  animation: sorova-avatar-bob 2.6s ease-in-out infinite;
+  transform-origin: 100px 180px;
+}
+
+.avatar-blink {
+  animation: sorova-avatar-blink 4.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.avatar-sway {
+  animation: sorova-avatar-sway 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center top;
+}
+
 .brand-games-letter {
   display: inline-block;
   text-shadow: 0 3px 0 rgba(15, 23, 42, 0.18);
