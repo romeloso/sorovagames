@@ -31,14 +31,21 @@ export function ProfileSelectPage() {
       <TopBar />
       <section className="mx-auto mb-8 max-w-xl text-center">
         <div className="mb-4 flex justify-center">
-          <img
-            src={APP_CONFIG.brandImage}
-            alt={`${APP_CONFIG.name} — ${APP_CONFIG.tagline}`}
-            className="animate-brand-float h-auto w-full max-w-md select-none object-contain sm:max-w-lg"
-            width={933}
-            height={797}
-            decoding="async"
-          />
+          <button
+            type="button"
+            className="transition hover:opacity-90"
+            onClick={() => navigate('/superadmin')}
+            aria-label="Sorova Games"
+          >
+            <img
+              src={APP_CONFIG.brandImage}
+              alt=""
+              className="animate-brand-float h-auto w-full max-w-md select-none object-contain sm:max-w-lg"
+              width={933}
+              height={797}
+              decoding="async"
+            />
+          </button>
         </div>
         <h1 className="font-display text-4xl font-bold text-ink sm:text-5xl text-balance">
           ¿Quién va a jugar hoy?

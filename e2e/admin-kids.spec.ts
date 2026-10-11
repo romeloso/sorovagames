@@ -11,7 +11,7 @@ test.describe('Mis Juegos E2E', () => {
 
     await expect(page.getByRole('heading', { name: /¿Quién va a jugar hoy/i })).toBeVisible()
 
-    await page.getByRole('button', { name: 'Sorova Games' }).click()
+    await page.getByRole('button', { name: 'Sorova Games' }).first().click()
     await page.getByPlaceholder('••••').fill('4716')
     await page.getByRole('button', { name: 'Entrar' }).click()
     await expect(page.getByText('Panel del superadministrador')).toBeVisible()
