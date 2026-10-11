@@ -24,7 +24,7 @@ function AdventurePath({
   if (!progress) return null
 
   return (
-    <section className="rounded-[2rem] bg-white/80 p-5 sm:p-7">
+    <section className="rounded-[2rem] bg-card/80 p-5 sm:p-7">
       <h2 className="mb-5 font-display text-3xl font-bold">{title}</h2>
       <ol className="space-y-0">
         {levels.map((level, index) => {

@@ -26,7 +26,7 @@ export function Avatar({
   return (
     <span
       className={cn(
-        'relative inline-block overflow-hidden rounded-full bg-white ring-4 ring-white',
+        'relative inline-block overflow-hidden rounded-full bg-card ring-4 ring-card',
         sizes[size],
         className,
       )}

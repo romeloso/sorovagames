@@ -20,8 +20,8 @@ export function GameCard({
       className={cn(
         'relative flex min-h-44 w-full flex-col items-start justify-between rounded-[1.75rem] p-5 text-left transition',
         locked
-          ? 'cursor-not-allowed bg-white/55 opacity-80'
-          : 'bg-white/90 shadow-[0_12px_28px_rgba(31,42,55,0.1)] hover:-translate-y-1',
+          ? 'cursor-not-allowed bg-card/55 opacity-80'
+          : 'bg-card/90 shadow-[0_12px_28px_rgba(31,42,55,0.1)] hover:-translate-y-1',
       )}
       style={{ boxShadow: locked ? undefined : `0 12px 28px ${game.accent}33` }}
     >

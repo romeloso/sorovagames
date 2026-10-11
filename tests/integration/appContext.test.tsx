@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { AppProvider, useApp } from '@/context/AppContext'
+import { SEED_TOPICS } from '@/data/content/seed'
 import { Button } from '@/components/ui/Button'
 
 function Probe() {
@@ -66,6 +67,6 @@ describe('AppContext integration', () => {
     expect(screen.getByText(/Perfiles: 4/)).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add topic' }))
-    expect(screen.getByText('Temas: 1')).toBeInTheDocument()
+    expect(screen.getByText(`Temas: ${SEED_TOPICS.length + 1}`)).toBeInTheDocument()
   })
 })

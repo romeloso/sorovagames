@@ -1,6 +1,6 @@
 import { SCHOOL_GRADES, type SchoolGrade } from '@/lib/grade'
 
-const inputClass = 'w-full rounded-xl border-2 border-ink/10 px-3 py-2 font-bold'
+const inputClass = 'w-full rounded-xl border-2 border-ink/10 bg-card px-3 py-2 font-bold text-ink'
 
 export function GradeSelect({
   value,

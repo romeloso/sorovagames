@@ -234,7 +234,7 @@ function WordBuildView({
           <button
             key={item.id}
             type="button"
-            className="rounded-2xl bg-sun px-4 py-3 font-display text-3xl font-bold text-ink"
+            className="rounded-2xl bg-sun px-4 py-3 font-display text-3xl font-bold text-navy"
             onClick={() => pushLetter(item)}
           >
             {item.letter}
@@ -367,7 +367,7 @@ function ReadingPracticeView({
         <input
           value={value}
           onChange={(event) => setValue(event.target.value)}
-          className="w-full rounded-2xl border-2 border-ink/10 bg-white px-4 py-4 font-display text-2xl font-bold tracking-wide text-ink outline-none focus:border-teal"
+          className="w-full rounded-2xl border-2 border-ink/10 bg-card px-4 py-4 font-display text-2xl font-bold tracking-wide text-ink outline-none focus:border-teal"
           placeholder="Escribe aquí..."
           autoComplete="off"
           autoCapitalize="characters"

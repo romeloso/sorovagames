@@ -59,7 +59,7 @@ export function AvatarUploader({
         }}
         className={cn(
           'flex w-20 flex-col items-center gap-1 rounded-2xl p-1 transition',
-          selected ? 'bg-teal/15 ring-2 ring-teal' : 'hover:bg-white/70',
+          selected ? 'bg-teal/15 ring-2 ring-teal' : 'hover:bg-card/70',
         )}
         aria-label={`Usar ${label}`}
         aria-pressed={selected}
@@ -136,7 +136,7 @@ export function AvatarUploader({
           <Button
             size="md"
             variant="ghost"
-            className="bg-white/80 ring-1 ring-ink/10"
+            className="bg-card/80 ring-1 ring-ink/10"
             onClick={() => {
               setPreview(null)
               onSave(defaultSrc)

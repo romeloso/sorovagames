@@ -26,9 +26,9 @@ export function FeedbackBanner({
   subtitle?: string
 }) {
   const tones = {
-    success: 'bg-mint/80 text-ink ring-teal/30',
-    retry: 'bg-sun/70 text-ink ring-sun/50',
-    info: 'bg-sky/30 text-ink ring-sky/40',
+    success: 'bg-mint/80 text-navy ring-teal/30',
+    retry: 'bg-sun/70 text-navy ring-sun/50',
+    info: 'bg-sky/30 text-navy ring-sky/40',
   }
 
   return (
@@ -38,7 +38,7 @@ export function FeedbackBanner({
       aria-live="polite"
     >
       <p className="font-display text-2xl font-bold">{title}</p>
-      {subtitle ? <p className="mt-1 font-semibold text-ink-soft">{subtitle}</p> : null}
+      {subtitle ? <p className="mt-1 font-semibold text-navy/80">{subtitle}</p> : null}
     </div>
   )
 }

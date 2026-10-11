@@ -69,6 +69,32 @@ export const WORDSEARCH_LEVEL_DEFS: WordSearchLevelDef[] = [
     minGrade: 3,
     maxGrade: 6,
   },
+  {
+    id: 'wordsearch-l5',
+    order: 5,
+    title: 'Mi familia',
+    subtitle: 'Palabras de las personas de casa',
+    icon: '👨‍👩‍👧',
+    size: 9,
+    words: ['MAMA', 'PAPA', 'BEBE', 'TIO', 'PRIMO', 'NENA'],
+    minAge: 4,
+    maxAge: 10,
+    minGrade: 0,
+    maxGrade: 4,
+  },
+  {
+    id: 'wordsearch-l6',
+    order: 6,
+    title: 'Colores y comida',
+    subtitle: 'Encuentra colores y alimentos',
+    icon: '🍎',
+    size: 9,
+    words: ['ROJO', 'AZUL', 'VERDE', 'PAN', 'LECHE', 'SOPA'],
+    minAge: 5,
+    maxAge: 12,
+    minGrade: 1,
+    maxGrade: 6,
+  },
 ]
 
 const cache = new Map<string, WordSearchPuzzle>()

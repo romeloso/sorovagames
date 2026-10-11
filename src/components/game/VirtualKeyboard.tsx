@@ -29,8 +29,8 @@ export function VirtualKeyboard({
                 className={cn(
                   'grid h-11 w-9 place-items-center rounded-xl text-sm font-extrabold ring-1 transition sm:h-14 sm:w-12 sm:text-lg',
                   active
-                    ? 'scale-110 bg-sun text-ink ring-2 ring-sun shadow-[0_0_0_4px_rgba(255,209,102,0.35)]'
-                    : 'bg-white/90 text-ink ring-ink/10 hover:bg-sand',
+                    ? 'scale-110 bg-sun text-navy ring-2 ring-sun shadow-[0_0_0_4px_rgba(255,209,102,0.35)]'
+                    : 'bg-card/90 text-ink ring-ink/10 hover:bg-sand',
                 )}
                 aria-current={active ? 'true' : undefined}
               >
@@ -40,6 +40,22 @@ export function VirtualKeyboard({
           })}
         </div>
       ))}
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={() => onKey?.(' ')}
+          className={cn(
+            'h-11 min-w-40 rounded-xl px-6 text-sm font-extrabold ring-1 transition sm:h-14',
+            target === ' '
+              ? 'scale-105 bg-sun text-navy ring-2 ring-sun'
+              : 'bg-card/90 text-ink ring-ink/10 hover:bg-sand',
+          )}
+          aria-label="Espacio"
+          aria-current={target === ' ' ? 'true' : undefined}
+        >
+          espacio
+        </button>
+      </div>
     </div>
   )
 }

@@ -15,7 +15,7 @@ export function StatPill({
   return (
     <div
       className={cn(
-        'flex min-w-[7.5rem] flex-col rounded-2xl bg-white/80 px-4 py-3 ring-1 ring-ink/10',
+        'flex min-w-[7.5rem] flex-col rounded-2xl bg-card/80 px-4 py-3 ring-1 ring-ink/10',
         className,
       )}
     >

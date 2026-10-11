@@ -65,7 +65,7 @@ function KeyTarget({
         {activity.key}
       </div>
       {fingerHint ? (
-        <p className="inline-block rounded-2xl bg-sun/50 px-4 py-2 text-base font-bold">
+        <p className="inline-block rounded-2xl bg-sun/50 px-4 py-2 text-base font-bold text-navy">
           {fingerHint}
         </p>
       ) : null}
@@ -173,10 +173,16 @@ function TypeTargetView({
   return (
     <div className="space-y-6 text-center">
       <p className="text-lg font-bold text-ink-soft">{activity.prompt}</p>
-      <div className="mx-auto max-w-md rounded-[2rem] bg-sand px-6 py-5 font-display text-4xl font-bold tracking-[0.2em] text-ink sm:text-5xl">
+      <div
+        className={
+          target.length > 8
+            ? 'mx-auto max-w-md rounded-[2rem] bg-sand px-6 py-5 font-display text-2xl font-bold tracking-wide text-ink sm:text-4xl'
+            : 'mx-auto max-w-md rounded-[2rem] bg-sand px-6 py-5 font-display text-4xl font-bold tracking-[0.2em] text-ink sm:text-5xl'
+        }
+      >
         {target}
       </div>
-      <div className="mx-auto min-h-16 max-w-md rounded-[1.5rem] bg-white px-4 py-3 font-display text-3xl font-bold tracking-[0.2em] text-teal ring-2 ring-teal/30">
+      <div className="mx-auto min-h-16 max-w-md rounded-[1.5rem] bg-card px-4 py-3 font-display text-3xl font-bold tracking-[0.2em] text-teal ring-2 ring-teal/30">
         {value || <span className="text-ink-soft">_</span>}
       </div>
       <VirtualKeyboard onKey={handle} highlightKey={target[value.length]} />

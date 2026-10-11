@@ -12,6 +12,8 @@ export type GameId =
 
 export type SessionRole = 'child' | 'admin'
 
+export type ColorTheme = 'light' | 'dark'
+
 /** 0 = preescolar, 1–6 = grados de primaria. */
 export type SchoolGrade = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
@@ -342,6 +344,7 @@ export interface ContentBank {
 export interface AppState {
   version: number
   soundEnabled: boolean
+  theme: ColorTheme
   activeProfileId: string | null
   sessionRole: SessionRole
   profiles: Record<string, ChildProfile>

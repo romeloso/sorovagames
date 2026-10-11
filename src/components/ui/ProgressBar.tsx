@@ -24,7 +24,7 @@ export function ProgressBar({
         </div>
       ) : null}
       <div
-        className="h-4 overflow-hidden rounded-full bg-white/80 ring-1 ring-ink/10"
+        className="h-4 overflow-hidden rounded-full bg-card/80 ring-1 ring-ink/10"
         role="progressbar"
         aria-valuenow={pct}
         aria-valuemin={0}

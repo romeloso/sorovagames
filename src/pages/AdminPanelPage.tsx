@@ -19,8 +19,8 @@ import type { GameId, ReadingStats, TypingStats } from '@/types'
 
 type Tab = 'children' | 'topics' | 'avatars' | 'progress' | 'material'
 
-const inputClass = 'w-full rounded-xl border-2 border-ink/10 px-3 py-2 font-bold'
-const sectionClass = 'rounded-[1.75rem] bg-white/90 p-5 ring-1 ring-ink/5'
+const inputClass = 'w-full rounded-xl border-2 border-ink/10 bg-card px-3 py-2 font-bold text-ink'
+const sectionClass = 'rounded-[1.75rem] bg-card/90 p-5 ring-1 ring-ink/5'
 
 function AgeRangeInputs({
   minAge,
@@ -326,7 +326,7 @@ export function AdminPanelPage() {
                           </Button>
                         </div>
                         {editingAvatarId === profile.id ? (
-                          <div className="rounded-2xl bg-white/80 p-3">
+                          <div className="rounded-2xl bg-card/80 p-3">
                             <AvatarUploader
                               profile={profile}
                               library={library}

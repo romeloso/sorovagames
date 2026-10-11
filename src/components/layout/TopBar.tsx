@@ -13,7 +13,7 @@ export function TopBar({
   backLabel?: string
 }) {
   const navigate = useNavigate()
-  const { state, toggleSound, clearActiveProfile } = useApp()
+  const { state, toggleSound, toggleTheme, clearActiveProfile } = useApp()
 
   return (
     <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -47,7 +47,17 @@ export function TopBar({
         <Button
           variant="ghost"
           size="md"
-          className="!min-h-11 bg-white/70 ring-1 ring-ink/10"
+          className="!min-h-11 bg-card/70 ring-1 ring-ink/10"
+          onClick={toggleTheme}
+          aria-pressed={state.theme === 'dark'}
+          aria-label={state.theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        >
+          {state.theme === 'dark' ? '☀️ Modo claro' : '🌙 Modo oscuro'}
+        </Button>
+        <Button
+          variant="ghost"
+          size="md"
+          className="!min-h-11 bg-card/70 ring-1 ring-ink/10"
           onClick={toggleSound}
           aria-pressed={state.soundEnabled}
           aria-label={state.soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}

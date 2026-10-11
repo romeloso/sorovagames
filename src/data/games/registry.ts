@@ -11,7 +11,7 @@ export const GAME_DEFINITIONS: GameDefinition[] = [
     icon: '🔤',
     status: 'available',
     accent: BRAND_COLORS.violet,
-    totalLevels: 4,
+    totalLevels: 6,
   },
   {
     id: 'reading',

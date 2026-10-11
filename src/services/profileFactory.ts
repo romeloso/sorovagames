@@ -1,11 +1,22 @@
 import { ACCENT_PALETTE, PROFILE_SEEDS } from '@/config/profiles'
 import { defaultAvatarFor, seedAvatarLibraryItems } from '@/config/avatars'
+import { SEED_PASSAGES, SEED_TOPICS, SEED_WORDS } from '@/data/content/seed'
 import { createInitialGameProgress } from '@/domain/progress'
 import { getAvailableReadingLevels } from '@/data/games/reading/levels'
 import { TYPING_LEVELS } from '@/data/games/typing/levels'
 import { getWordSearchLevels } from '@/data/games/wordsearch/levels'
 import { createAvatarLibraryItem } from '@/services/contentService'
-import type { AppState, ChildProfile, ContentBank, GameId, GameProgress, SchoolGrade } from '@/types'
+import type {
+  AppState,
+  ChildProfile,
+  ColorTheme,
+  ContentBank,
+  GameId,
+  GameProgress,
+  SchoolGrade,
+} from '@/types'
+
+export const APP_STATE_VERSION = 4
 
 function nowIso() {
   return new Date().toISOString()
@@ -83,25 +94,29 @@ export function createDefaultProgressForChild(
   }
 }
 
-export function createInitialAppState(soundEnabled = true): AppState {
+export function createInitialAppState(soundEnabled = true, theme: ColorTheme = 'dark'): AppState {
   const profiles: Record<string, ChildProfile> = {}
   const progress: AppState['progress'] = {}
+  const contentBank: ContentBank = {
+    words: SEED_WORDS,
+    passages: SEED_PASSAGES,
+    topics: SEED_TOPICS,
+    avatarLibrary: seedAvatarLibraryItems().map((item) => createAvatarLibraryItem(item)),
+  }
 
   for (const seed of PROFILE_SEEDS) {
     profiles[seed.id] = createProfileFromSeed(seed)
-    progress[seed.id] = createDefaultProgressForChild()
+    progress[seed.id] = createDefaultProgressForChild(contentBank)
   }
 
   return {
-    version: 3,
+    version: APP_STATE_VERSION,
     soundEnabled,
+    theme,
     activeProfileId: null,
     sessionRole: 'child',
     profiles,
     progress,
-    contentBank: {
-      ...emptyContentBank(),
-      avatarLibrary: seedAvatarLibraryItems().map((item) => createAvatarLibraryItem(item)),
-    },
+    contentBank,
   }
 }

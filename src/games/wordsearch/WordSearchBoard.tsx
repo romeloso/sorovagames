@@ -145,7 +145,7 @@ export function WordSearchBoard({
         </div>
       </section>
 
-      <section className="rounded-[1.75rem] bg-white/90 p-4 ring-1 ring-ink/5 sm:p-5">
+      <section className="rounded-[1.75rem] bg-card/90 p-4 ring-1 ring-ink/5 sm:p-5">
         <h3 className="font-display text-xl font-bold">Palabras</h3>
         <ul className="mt-3 flex flex-wrap gap-2">
           {puzzle.words.map((word, index) => {

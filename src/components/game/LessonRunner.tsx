@@ -84,7 +84,7 @@ export function LessonRunner({ lesson, renderActivity, onComplete, onExit }: Les
 
       {banner ? <FeedbackBanner tone={banner.tone} title={banner.title} /> : null}
 
-      <div className="rounded-[2rem] bg-white/85 p-5 shadow-[0_12px_30px_rgba(31,42,55,0.08)] ring-1 ring-ink/5 sm:p-8">
+      <div className="rounded-[2rem] bg-card/85 p-5 shadow-[0_12px_30px_rgba(31,42,55,0.08)] ring-1 ring-ink/5 sm:p-8">
         {renderActivity({ activity, onResolved: handleResolved })}
       </div>
     </div>

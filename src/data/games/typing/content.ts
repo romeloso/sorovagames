@@ -193,4 +193,90 @@ export const TYPING_LESSONS: LessonDefinition[] = [
       { id: 't5b-4', kind: 'word_type', prompt: 'Escribe: PAPA', target: 'PAPA' },
     ],
   },
+  {
+    id: 'typing-l6-a',
+    gameId: 'typing',
+    levelId: 'typing-l6',
+    title: 'Animales grandes',
+    activities: [
+      { id: 't6a-1', kind: 'word_type', prompt: 'Escribe: ELEFANTE', target: 'ELEFANTE' },
+      { id: 't6a-2', kind: 'word_type', prompt: 'Escribe: MARIPOSA', target: 'MARIPOSA' },
+      { id: 't6a-3', kind: 'word_type', prompt: 'Escribe: DINOSAURIO', target: 'DINOSAURIO' },
+      { id: 't6a-4', kind: 'word_type', prompt: 'Escribe: COCODRILO', target: 'COCODRILO' },
+    ],
+  },
+  {
+    id: 'typing-l6-b',
+    gameId: 'typing',
+    levelId: 'typing-l6',
+    title: 'Palabras del colegio',
+    activities: [
+      { id: 't6b-1', kind: 'word_type', prompt: 'Escribe: BIBLIOTECA', target: 'BIBLIOTECA' },
+      { id: 't6b-2', kind: 'word_type', prompt: 'Escribe: COMPUTADORA', target: 'COMPUTADORA' },
+      { id: 't6b-3', kind: 'word_type', prompt: 'Escribe: ESTRELLA', target: 'ESTRELLA' },
+      { id: 't6b-4', kind: 'word_type', prompt: 'Escribe: CHOCOLATE', target: 'CHOCOLATE' },
+    ],
+  },
+  {
+    id: 'typing-l7-a',
+    gameId: 'typing',
+    levelId: 'typing-l7',
+    title: 'Frases de casa',
+    activities: [
+      { id: 't7a-1', kind: 'word_type', prompt: 'Escribe la frase', target: 'HOLA MAMA' },
+      { id: 't7a-2', kind: 'word_type', prompt: 'Escribe la frase', target: 'EL SOL BRILLA' },
+      { id: 't7a-3', kind: 'word_type', prompt: 'Escribe la frase', target: 'ME GUSTA LEER' },
+    ],
+  },
+  {
+    id: 'typing-l7-b',
+    gameId: 'typing',
+    levelId: 'typing-l7',
+    title: 'Más frases',
+    activities: [
+      { id: 't7b-1', kind: 'word_type', prompt: 'Escribe la frase', target: 'LA CASA ES AZUL' },
+      { id: 't7b-2', kind: 'word_type', prompt: 'Escribe la frase', target: 'VEO UNA LUNA' },
+      { id: 't7b-3', kind: 'word_type', prompt: 'Escribe la frase', target: 'JUEGO CON PAPA' },
+    ],
+  },
+  {
+    id: 'typing-l8-a',
+    gameId: 'typing',
+    levelId: 'typing-l8',
+    title: 'Carrera larga',
+    activities: [
+      {
+        id: 't8a-1',
+        kind: 'letter_race',
+        prompt: 'Sigue todas las letras sin fallar',
+        letters: ['A', 'S', 'D', 'F', 'J', 'K', 'L', 'Ñ', 'G', 'H'],
+      },
+      {
+        id: 't8a-2',
+        kind: 'letter_race',
+        prompt: 'Otra vuelta, más rápido',
+        letters: ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+      },
+    ],
+  },
+  {
+    id: 'typing-l8-b',
+    gameId: 'typing',
+    levelId: 'typing-l8',
+    title: 'Reto final',
+    activities: [
+      {
+        id: 't8b-1',
+        kind: 'letter_race',
+        prompt: 'Mezcla de todo el teclado',
+        letters: ['Z', 'A', 'M', 'S', 'N', 'D', 'B', 'F', 'V', 'J'],
+      },
+      {
+        id: 't8b-2',
+        kind: 'letter_race',
+        prompt: 'Última carrera',
+        letters: ['K', 'L', 'Ñ', 'P', 'O', 'I', 'U', 'Y', 'T', 'R'],
+      },
+    ],
+  },
 ]

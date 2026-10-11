@@ -17,7 +17,7 @@ export function AdminLoginPage() {
   return (
     <PageShell>
       <TopBar backTo="/" backLabel="Inicio" />
-      <section className="mx-auto max-w-md rounded-[2rem] bg-white/90 p-6 shadow-[0_12px_30px_rgba(31,42,55,0.08)] sm:p-8">
+      <section className="mx-auto max-w-md rounded-[2rem] bg-card/90 p-6 shadow-[0_12px_30px_rgba(31,42,55,0.08)] sm:p-8">
         <h1 className="font-display text-3xl font-bold text-ink">Rol {ADMIN_CONFIG.roleLabel}</h1>
         <p className="mt-2 font-semibold text-ink-soft">
           Ingresa el PIN para gestionar niños, edades, temas de estudio, avatares y material.
@@ -33,7 +33,7 @@ export function AdminLoginPage() {
               setPin(event.target.value)
               setError(null)
             }}
-            className="w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-xl font-bold tracking-[0.3em] outline-none focus:border-teal"
+            className="w-full rounded-2xl border-2 border-ink/10 bg-card px-4 py-3 text-xl font-bold tracking-[0.3em] text-ink outline-none focus:border-teal"
             placeholder="••••"
             autoComplete="off"
           />

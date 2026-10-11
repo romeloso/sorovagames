@@ -43,7 +43,7 @@ export function GameHubPage() {
     return (
       <PageShell>
         <TopBar backTo="/dashboard" />
-        <div className="rounded-[2rem] bg-white/80 p-8 text-center">
+        <div className="rounded-[2rem] bg-card/80 p-8 text-center">
           <p className="text-6xl">{game.icon}</p>
           <h1 className="mt-4 font-display text-4xl font-bold">{game.title}</h1>
           <p className="mt-3 text-lg font-semibold text-ink-soft">
@@ -95,7 +95,7 @@ export function GameHubPage() {
       </section>
 
       {subjectTopics.length > 0 ? (
-        <section className="mb-5 rounded-[1.75rem] bg-white/85 p-5 ring-1 ring-ink/5">
+        <section className="mb-5 rounded-[1.75rem] bg-card/85 p-5 ring-1 ring-ink/5">
           <h2 className="font-display text-xl font-bold">Temas de esta materia</h2>
           <ul className="mt-3 space-y-2">
             {subjectTopics.map((topic) => (
@@ -120,7 +120,7 @@ export function GameHubPage() {
             <article
               key={level.id}
               className={cn(
-                'rounded-[1.75rem] bg-white/85 p-5 ring-1 ring-ink/5',
+                'rounded-[1.75rem] bg-card/85 p-5 ring-1 ring-ink/5',
                 !unlocked && 'opacity-75',
               )}
             >

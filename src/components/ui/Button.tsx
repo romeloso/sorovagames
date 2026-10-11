@@ -13,10 +13,10 @@ const variants: Record<Variant, string> = {
   primary:
     'bg-teal text-white shadow-[0_4px_0_#4f46e5] hover:translate-y-px hover:shadow-[0_3px_0_#4f46e5] active:translate-y-1 active:shadow-none',
   secondary:
-    'bg-white text-ink border-2 border-ink/10 shadow-[0_4px_0_rgba(15,23,42,0.12)] hover:bg-cream',
-  ghost: 'bg-transparent text-ink hover:bg-white/60',
+    'bg-card text-ink border-2 border-ink/10 shadow-[0_4px_0_rgba(15,23,42,0.12)] hover:bg-cream',
+  ghost: 'bg-transparent text-ink hover:bg-card/60',
   sunny:
-    'bg-sun text-ink shadow-[0_4px_0_#f59e0b] hover:translate-y-px active:translate-y-1 active:shadow-none',
+    'bg-sun text-navy shadow-[0_4px_0_#f59e0b] hover:translate-y-px active:translate-y-1 active:shadow-none',
   danger:
     'bg-coral text-white shadow-[0_4px_0_#db2777] hover:translate-y-px active:translate-y-1 active:shadow-none',
 }

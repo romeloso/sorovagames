@@ -30,7 +30,7 @@ export function ResultPage() {
   return (
     <PageShell>
       <TopBar backTo="/dashboard" backLabel="Dashboard" />
-      <section className="rounded-[2rem] bg-white/90 p-6 text-center shadow-[0_16px_40px_rgba(31,42,55,0.1)] sm:p-10">
+      <section className="rounded-[2rem] bg-card/90 p-6 text-center shadow-[0_16px_40px_rgba(31,42,55,0.1)] sm:p-10">
         <p className="text-6xl" aria-hidden="true">
           🎉
         </p>
@@ -40,20 +40,20 @@ export function ResultPage() {
         </p>
 
         <div className="mx-auto mt-6 grid max-w-lg grid-cols-2 gap-3 text-left">
-          <div className="rounded-2xl bg-sun/50 p-4">
-            <p className="text-sm font-bold text-ink-soft">XP</p>
+          <div className="rounded-2xl bg-sun/50 p-4 text-navy">
+            <p className="text-sm font-bold text-navy/70">XP</p>
             <p className="font-display text-3xl font-bold">+{formatNumber(state.reward.xp)}</p>
           </div>
-          <div className="rounded-2xl bg-mint/60 p-4">
-            <p className="text-sm font-bold text-ink-soft">Monedas</p>
+          <div className="rounded-2xl bg-mint/60 p-4 text-navy">
+            <p className="text-sm font-bold text-navy/70">Monedas</p>
             <p className="font-display text-3xl font-bold">+{formatNumber(state.reward.coins)}</p>
           </div>
-          <div className="rounded-2xl bg-sky/30 p-4">
-            <p className="text-sm font-bold text-ink-soft">Precisión</p>
+          <div className="rounded-2xl bg-sky/30 p-4 text-navy">
+            <p className="text-sm font-bold text-navy/70">Precisión</p>
             <p className="font-display text-3xl font-bold">{formatPercent(state.result.accuracy)}</p>
           </div>
-          <div className="rounded-2xl bg-coral/20 p-4">
-            <p className="text-sm font-bold text-ink-soft">Estrellas</p>
+          <div className="rounded-2xl bg-coral/20 p-4 text-navy">
+            <p className="text-sm font-bold text-navy/70">Estrellas</p>
             <p className="font-display text-3xl font-bold">
               {'⭐'.repeat(state.result.stars) || '—'}
             </p>
@@ -75,7 +75,7 @@ export function ResultPage() {
             {state.reward.achievements.map((achievement) => (
               <p
                 key={achievement.id}
-                className="rounded-2xl bg-sun/60 px-4 py-3 font-bold text-ink"
+                className="rounded-2xl bg-sun/60 px-4 py-3 font-bold text-navy"
               >
                 🏆 ¡Nuevo logro! {achievement.title}
               </p>
@@ -99,7 +99,7 @@ export function ResultPage() {
           >
             Siguiente reto
           </Button>
-          <Button variant="ghost" className="bg-white ring-1 ring-ink/10" onClick={() => navigate('/dashboard')}>
+          <Button variant="ghost" className="bg-card ring-1 ring-ink/10" onClick={() => navigate('/dashboard')}>
             Ir al inicio
           </Button>
         </div>

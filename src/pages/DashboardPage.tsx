@@ -56,7 +56,7 @@ export function DashboardPage() {
     <PageShell wide>
       <TopBar showBackToProfiles />
 
-      <section className="mb-8 rounded-[2rem] bg-white/80 p-5 shadow-[0_12px_30px_rgba(31,42,55,0.08)] sm:p-8">
+      <section className="mb-8 rounded-[2rem] bg-card/80 p-5 shadow-[0_12px_30px_rgba(31,42,55,0.08)] sm:p-8">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           <div className="flex flex-col items-center gap-2 sm:items-start">
             <Avatar
@@ -114,7 +114,7 @@ export function DashboardPage() {
             </p>
             <input
               type="date"
-              className="w-full max-w-xs rounded-xl border-2 border-ink/10 px-3 py-2 font-bold"
+              className="w-full max-w-xs rounded-xl border-2 border-ink/10 bg-card px-3 py-2 font-bold text-ink"
               value={activeProfile.birthDate ?? ''}
               onChange={(e) =>
                 updateChildProfile(activeProfile.id, {
@@ -149,7 +149,7 @@ export function DashboardPage() {
       </section>
 
       {myTopics.length > 0 ? (
-        <section className="mb-8 rounded-[1.75rem] bg-white/75 p-5 ring-1 ring-ink/5">
+        <section className="mb-8 rounded-[1.75rem] bg-card/75 p-5 ring-1 ring-ink/5">
           <h2 className="font-display text-2xl font-bold">Temas para ti</h2>
           <p className="mt-1 font-semibold text-ink-soft">
             Adaptados a {formatGrade(activeProfile.grade)}
@@ -176,7 +176,7 @@ export function DashboardPage() {
       ) : null}
 
       <section className="mb-8 grid gap-4 md:grid-cols-2">
-        <div className="rounded-[1.75rem] bg-white/75 p-5 ring-1 ring-ink/5">
+        <div className="rounded-[1.75rem] bg-card/75 p-5 ring-1 ring-ink/5">
           <h2 className="font-display text-2xl font-bold">📚 Lectura</h2>
           <p className="mt-2 font-semibold text-ink-soft">
             Palabras aprendidas: {readingStats?.wordsLearned.length ?? 0}
@@ -190,7 +190,7 @@ export function DashboardPage() {
             colorClassName="bg-coral"
           />
         </div>
-        <div className="rounded-[1.75rem] bg-white/75 p-5 ring-1 ring-ink/5">
+        <div className="rounded-[1.75rem] bg-card/75 p-5 ring-1 ring-ink/5">
           <h2 className="font-display text-2xl font-bold">⌨️ Tecleo</h2>
           <p className="mt-2 font-semibold text-ink-soft">
             Mejor velocidad: {Math.round(typingStats?.bestWpm ?? 0)} PPM
