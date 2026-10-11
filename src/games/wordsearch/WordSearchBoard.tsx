@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, type PointerEvent } from 'react'
 import { BRAND_COLORS } from '@/config/app'
 import { SmilingStar } from '@/components/brand/SmilingStar'
 import { Button } from '@/components/ui/Button'
@@ -28,9 +28,11 @@ export function WordSearchBoard({
   onPlaySound?: (name: 'correct' | 'wrong' | 'reward') => void
 }) {
   const startedAt = useRef(Date.now())
+  const gridRef = useRef<HTMLDivElement>(null)
+  const selectingRef = useRef(false)
+  const anchorRef = useRef<{ row: number; col: number } | null>(null)
+  const pathRef = useRef<Array<{ row: number; col: number }>>([])
   const [found, setFound] = useState<string[]>([])
-  const [selecting, setSelecting] = useState(false)
-  const [anchor, setAnchor] = useState<{ row: number; col: number } | null>(null)
   const [path, setPath] = useState<Array<{ row: number; col: number }>>([])
   const [message, setMessage] = useState<string | null>(null)
 
@@ -47,8 +49,7 @@ export function WordSearchBoard({
   const selectingKeys = useMemo(() => new Set(path.map((cell) => cellKey(cell.row, cell.col))), [path])
 
   const finishSelection = (cells: Array<{ row: number; col: number }>) => {
-    setSelecting(false)
-    setAnchor(null)
+    pathRef.current = []
     setPath([])
     if (cells.length < 2) return
 
@@ -78,20 +79,59 @@ export function WordSearchBoard({
     }
   }
 
-  const onPointerDown = (row: number, col: number) => {
-    setSelecting(true)
-    setAnchor({ row, col })
-    setPath([{ row, col }])
+  const rememberPath = (cells: Array<{ row: number; col: number }>) => {
+    pathRef.current = cells
+    setPath(cells)
   }
 
-  const onPointerEnter = (row: number, col: number) => {
-    if (!selecting || !anchor) return
-    setPath(lineBetween(anchor, { row, col }))
+  const cellFromEvent = (event: { clientX: number; clientY: number; target: EventTarget | null }) => {
+    const grid = gridRef.current
+    if (!grid) return null
+    const direct =
+      event.target instanceof Element ? event.target.closest<HTMLElement>('[data-cell]') : null
+    const hovered =
+      direct && grid.contains(direct)
+        ? direct
+        : document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-cell]')
+    if (!hovered || !grid.contains(hovered)) return null
+    const row = Number(hovered.dataset.row)
+    const col = Number(hovered.dataset.col)
+    if (!Number.isInteger(row) || !Number.isInteger(col)) return null
+    return { row, col }
+  }
+
+  const extendSelection = (row: number, col: number) => {
+    const anchor = anchorRef.current
+    if (!selectingRef.current || !anchor) return
+    rememberPath(lineBetween(anchor, { row, col }))
+  }
+
+  const onPointerDown = (event: PointerEvent<HTMLButtonElement>, row: number, col: number) => {
+    event.preventDefault()
+    selectingRef.current = true
+    anchorRef.current = { row, col }
+    rememberPath([{ row, col }])
+    const grid = gridRef.current
+    if (grid && typeof grid.setPointerCapture === 'function') {
+      try {
+        grid.setPointerCapture(event.pointerId)
+      } catch {
+        // El entorno de pruebas no siempre activa el puntero.
+      }
+    }
+  }
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const cell = cellFromEvent(event)
+    if (!cell) return
+    extendSelection(cell.row, cell.col)
   }
 
   const onPointerUp = () => {
-    if (!selecting) return
-    finishSelection(path)
+    if (!selectingRef.current) return
+    selectingRef.current = false
+    anchorRef.current = null
+    finishSelection(pathRef.current)
   }
 
   return (
@@ -108,10 +148,13 @@ export function WordSearchBoard({
         </div>
 
         <div
+          ref={gridRef}
+          data-testid="wordsearch-grid"
           className="mx-auto grid max-w-md gap-1 select-none touch-none"
           style={{ gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))` }}
+          onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
+          onPointerCancel={onPointerUp}
         >
           {puzzle.grid.map((row, rowIndex) =>
             row.map((letter, colIndex) => {
@@ -122,6 +165,9 @@ export function WordSearchBoard({
                 <button
                   key={key}
                   type="button"
+                  data-cell
+                  data-row={rowIndex}
+                  data-col={colIndex}
                   className={cn(
                     'aspect-square rounded-lg text-sm font-black transition sm:rounded-xl sm:text-base',
                     foundColor
@@ -131,11 +177,7 @@ export function WordSearchBoard({
                         : 'bg-white/10 text-white hover:bg-white/20',
                   )}
                   style={foundColor ? { backgroundColor: foundColor } : undefined}
-                  onPointerDown={(event) => {
-                    event.currentTarget.setPointerCapture(event.pointerId)
-                    onPointerDown(rowIndex, colIndex)
-                  }}
-                  onPointerEnter={() => onPointerEnter(rowIndex, colIndex)}
+                  onPointerDown={(event) => onPointerDown(event, rowIndex, colIndex)}
                 >
                   {letter}
                 </button>
