@@ -49,8 +49,13 @@ export function ProfileSelectPage() {
         </p>
         <form
           className="mx-auto mt-6 max-w-md space-y-3 text-left"
+          noValidate
           onSubmit={(event) => {
             event.preventDefault()
+            if (!code.trim()) {
+              setError('Escribe tu código.')
+              return
+            }
             const result = loginChild(code)
             if (!result.ok) {
               setError(result.error ?? 'No encontramos ese código.')
@@ -63,19 +68,26 @@ export function ProfileSelectPage() {
             Código del niño
             <input
               id="child-access-code"
-              aria-label="Código del niño"
               value={code}
               autoCapitalize="characters"
               autoComplete="off"
+              spellCheck={false}
+              aria-required="true"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? 'child-code-error' : undefined}
               onChange={(event) => {
                 setCode(event.target.value.toUpperCase())
                 setError(null)
               }}
-              className="mt-1 w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-center font-display text-2xl font-bold tracking-wide outline-none focus:border-teal"
+              className="mt-1 w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-center font-display text-2xl font-bold tracking-wide outline-none focus:border-teal aria-invalid:border-coral"
               placeholder="SOPHIA041217"
             />
           </label>
-          {error ? <p className="font-bold text-coral">{error}</p> : null}
+          {error ? (
+            <p id="child-code-error" role="alert" className="font-bold text-coral">
+              {error}
+            </p>
+          ) : null}
           <Button type="submit" className="w-full">
             Entrar a jugar
           </Button>

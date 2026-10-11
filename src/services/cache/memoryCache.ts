@@ -50,10 +50,6 @@ export class MemoryCache<T> {
       if (key.startsWith(prefix)) this.store.delete(key)
     }
   }
-
-  size() {
-    return this.store.size
-  }
 }
 
 /** Firma liviana del content bank para invalidar caché. */

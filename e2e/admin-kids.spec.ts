@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Mis Juegos E2E', () => {
+test.describe('Sorova Games E2E', () => {
   test('admin agrega niño, tema y el dashboard adapta por edad', async ({ page }) => {
     await page.goto('/')
     await page.evaluate(() => {

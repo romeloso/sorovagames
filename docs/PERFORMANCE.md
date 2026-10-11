@@ -1,4 +1,4 @@
-# Rendimiento, caché y límites — Mis Juegos
+# Rendimiento, caché y límites — Sorova Games
 
 ## 1. Rate limiting
 
@@ -7,17 +7,16 @@ Cliente (`src/lib/rateLimit.ts`), sliding window:
 | Acción | Límite | Ventana | Lockout |
 |--------|--------|---------|---------|
 | PIN admin | 5 | 60s | 60s |
+| Registro de tutor | 5 | 60s | 60s |
 | Subida avatar | 10 | 60s | 30s |
 | Alta de niño | 20 | 60s | — |
 | Contenido/temas | 30 | 60s | — |
 | Persistencia local | 120 | 60s | reintento |
 
-Cuando se active Supabase, complementar con rate limits de API Gateway / Edge Functions.
+## 2. Consultas
 
-## 2. Queries e índices
-
-- SQL: `src/supabase/schema.sql` — índices por `parent_id`, `(child_id, game_id)`, rangos `min_age/max_age`, topics por materia.
-- Cliente: `src/services/queryIndex.ts` — mapas por id y buckets por edad para evitar scans O(n) repetidos.
+- PostgreSQL: `server/schema.sql` guarda el documento de la app en `app_state` y proyecta perfiles, progreso y material.
+- Cliente: los temas del niño se filtran en `topicsForLearner` y se cachean en `src/services/cache/contentCache.ts`.
 - Meta HTML: description, Open Graph, `theme-color`, `robots`.
 
 ## 3. Estrategia de caché
@@ -53,4 +52,4 @@ Hallazgos (simulación cliente en este entorno):
 | Persistencia con avatares base64 | soft-limit ~4.5MB | Se degrada ~**20 perfiles** con fotos ~120KB c/u |
 
 Mitigaciones ya aplicadas: debounce + idle save, worker de imágenes, caché de lecciones/topics.
-Próximo paso cloud: Supabase Storage (URLs) + índices SQL + rate limit en Edge Functions.
+Las fotos se comprimen en un worker antes de entrar al documento. PostgreSQL guarda ese documento; `localStorage` queda como copia si la base no responde.

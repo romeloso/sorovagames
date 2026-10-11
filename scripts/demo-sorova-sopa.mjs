@@ -21,7 +21,8 @@ async function main() {
   await page.getByRole('heading', { name: /¿Quién va a jugar hoy/i }).waitFor()
   await page.screenshot({ path: `${outDir}/screenshots/sorova_lobby.png`, fullPage: true })
 
-  await page.locator('button', { has: page.getByRole('img', { name: /Avatar de Isabella/i }) }).click()
+  await page.getByLabel('Código del niño').fill('ISABELLA150316')
+  await page.getByRole('button', { name: 'Entrar a jugar' }).click()
   await page.waitForURL('**/dashboard')
   await page.getByRole('button', { name: /Sopa de letras/i }).click()
   await page.waitForURL('**/games/sopa-de-letras')

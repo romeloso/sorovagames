@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { TutorAccessModule } from '@/components/tutor/TutorAccessModule'
 import { TopBar } from '@/components/layout/TopBar'
@@ -30,43 +30,54 @@ export function StaffLoginPage({ mode }: { mode: 'tutor' | 'superadmin' }) {
           Este acceso crea y administra las cuentas de los tutores y ve los perfiles de todos los niños.
         </p>
 
-        <label className="mt-6 block">
-          <span className="mb-2 block text-sm font-bold text-ink-soft">PIN de superadministrador</span>
-          <input
-            type="password"
-            inputMode="numeric"
-            value={secret}
-            onChange={(event) => {
-              setSecret(event.target.value)
-              setError(null)
-            }}
-            className="w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-xl font-bold tracking-[0.2em] outline-none focus:border-teal"
-            placeholder="••••"
-            autoComplete="off"
-            autoFocus
-            aria-label="PIN de superadministrador"
-          />
-        </label>
+        <form
+          className="mt-6 space-y-4"
+          noValidate
+          onSubmit={(event: FormEvent) => {
+            event.preventDefault()
+            if (!secret.trim()) {
+              setError('Escribe el PIN.')
+              return
+            }
+            const result = loginSuperadmin(secret)
+            if (!result.ok) {
+              setError(result.error ?? 'No se pudo entrar.')
+              return
+            }
+            navigate('/panel')
+          }}
+        >
+          <label className="block text-sm font-bold text-ink-soft" htmlFor="superadmin-pin">
+            PIN de superadministrador
+            <input
+              id="superadmin-pin"
+              type="password"
+              inputMode="numeric"
+              value={secret}
+              onChange={(event) => {
+                setSecret(event.target.value)
+                setError(null)
+              }}
+              className="mt-1 w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-xl font-bold tracking-[0.2em] outline-none focus:border-teal aria-invalid:border-coral"
+              placeholder="••••"
+              autoComplete="off"
+              autoFocus
+              aria-required="true"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? 'superadmin-pin-error' : undefined}
+            />
+          </label>
 
-        {error ? <p className="mt-3 font-bold text-coral">{error}</p> : null}
+          {error ? (
+            <p id="superadmin-pin-error" role="alert" className="font-bold text-coral">
+              {error}
+            </p>
+          ) : null}
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Button
-            onClick={() => {
-              const result = loginSuperadmin(secret)
-              if (!result.ok) {
-                setError(result.error ?? 'No se pudo entrar.')
-                return
-              }
-              navigate('/panel')
-            }}
-          >
+          <Button type="submit" className="w-full">
             Entrar
           </Button>
-          <Button variant="secondary" onClick={() => navigate('/')}>
-            Cancelar
-          </Button>
-        </div>
+        </form>
       </section>
     </PageShell>
   )
