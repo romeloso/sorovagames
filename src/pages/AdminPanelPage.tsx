@@ -141,6 +141,7 @@ export function AdminPanelPage() {
   const [passageMinGrade, setPassageMinGrade] = useState(0)
   const [passageMaxGrade, setPassageMaxGrade] = useState(6)
 
+  const tutorAccount = state.activeTutorId ? state.tutors[state.activeTutorId] : null
   const profiles = useMemo(() => visibleChildProfiles(state), [state])
   const tutors = useMemo(() => Object.values(state.tutors), [state.tutors])
   const directoryRows = useMemo(
@@ -183,6 +184,9 @@ export function AdminPanelPage() {
               ? 'Crea tutores y revisa los perfiles de todos los niños.'
               : 'Crea los perfiles de tus niños. Cada uno entra con su código.'}
           </p>
+          {!isSuperadmin && tutorAccount ? (
+            <p className="mt-2 font-display text-2xl font-bold">{tutorAccount.name}</p>
+          ) : null}
         </div>
         <Button
           variant="secondary"
@@ -194,6 +198,12 @@ export function AdminPanelPage() {
           Cerrar sesión
         </Button>
       </div>
+
+      {!isSuperadmin && tutorAccount ? (
+        <p className="mb-6 rounded-2xl bg-mint/60 px-4 py-3 font-bold text-ink">
+          Código de tutor: {tutorAccount.accessCode}
+        </p>
+      ) : null}
 
       <div className="mb-6 flex flex-wrap gap-2">
         {tabs.map((item) => (
