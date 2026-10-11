@@ -9,6 +9,8 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { ACCENT_PALETTE } from '@/config/profiles'
 import { useApp } from '@/context/AppContext'
 import { visibleChildProfiles } from '@/domain/accessCode'
+import { buildChildDirectory } from '@/domain/childDirectory'
+import { ChildDirectoryTable } from '@/components/admin/ChildDirectoryTable'
 import { countLeoActivities } from '@/data/games/reading/curriculum'
 import { READING_WORLDS } from '@/data/games/reading/levels'
 import { countSubjectActivities, getSubjectLevels, SUBJECT_GAME_IDS } from '@/data/subjects/catalog'
@@ -102,6 +104,7 @@ export function AdminPanelPage() {
   const [childAvatarSrc, setChildAvatarSrc] = useState('')
   const [childTutorId, setChildTutorId] = useState('')
   const [tutorName, setTutorName] = useState('')
+  const [selectedChildId, setSelectedChildId] = useState<string | null>(null)
 
   const [topicSubject, setTopicSubject] = useState<GameId>('reading')
   const [topicTitle, setTopicTitle] = useState('')
@@ -136,6 +139,13 @@ export function AdminPanelPage() {
 
   const profiles = useMemo(() => visibleChildProfiles(state), [state])
   const tutors = useMemo(() => Object.values(state.tutors), [state.tutors])
+  const directoryRows = useMemo(
+    () => buildChildDirectory(profiles, tutors, state.progress),
+    [profiles, state.progress, tutors],
+  )
+  const editorProfiles = isSuperadmin
+    ? profiles.filter((profile) => profile.id === selectedChildId)
+    : profiles
   const library = state.contentBank.avatarLibrary
   const topics = state.contentBank.topics
 
@@ -268,6 +278,16 @@ export function AdminPanelPage() {
       ) : null}
 
       {tab === 'children' ? (
+        <div className="space-y-6">
+          {isSuperadmin ? (
+            <ChildDirectoryTable
+              rows={directoryRows}
+              profiles={profiles}
+              tutors={tutors}
+              selectedId={selectedChildId}
+              onSelect={setSelectedChildId}
+            />
+          ) : null}
         <div className="grid gap-6 lg:grid-cols-[1.1fr_1.4fr]">
           <section className={sectionClass}>
             <h2 className="font-display text-2xl font-bold">Agregar niño o niña</h2>
@@ -378,9 +398,16 @@ export function AdminPanelPage() {
           </section>
 
           <section className={sectionClass}>
-            <h2 className="font-display text-2xl font-bold">Perfiles ({profiles.length})</h2>
+            <h2 className="font-display text-2xl font-bold">
+              {isSuperadmin ? 'Editar perfil' : `Perfiles (${profiles.length})`}
+            </h2>
+            {isSuperadmin && editorProfiles.length === 0 ? (
+              <p className="mt-4 rounded-2xl bg-sand/70 px-4 py-3 font-semibold">
+                Elige un niño en la tabla para cambiar su grado, su fecha, su tutor o su foto.
+              </p>
+            ) : null}
             <ul className="mt-4 space-y-4">
-              {profiles.map((profile) => {
+              {editorProfiles.map((profile) => {
                 const age = ageFromBirthDate(profile.birthDate)
                 return (
                   <li key={profile.id} className="rounded-2xl bg-sand/60 p-4">
@@ -458,6 +485,7 @@ export function AdminPanelPage() {
                             variant="ghost"
                             onClick={() => {
                               removeChildProfile(profile.id)
+                              if (selectedChildId === profile.id) setSelectedChildId(null)
                               flash(`${profile.name} fue eliminado del listado.`)
                             }}
                           >
@@ -484,6 +512,7 @@ export function AdminPanelPage() {
               })}
             </ul>
           </section>
+        </div>
         </div>
       ) : null}
 
