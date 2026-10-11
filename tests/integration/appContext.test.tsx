@@ -6,16 +6,18 @@ import { AppProvider, useApp } from '@/context/AppContext'
 import { Button } from '@/components/ui/Button'
 
 function Probe() {
-  const { ready, state, loginAdmin, addChildProfile, addStudyTopic, isAdmin } = useApp()
+  const { ready, state, loginSuperadmin, addChildProfile, addStudyTopic, isSuperadmin } = useApp()
   if (!ready) return <p>Cargando</p>
+  const nora = Object.values(state.profiles).find((profile) => profile.name === 'Nora')
   return (
     <div>
       <p>Perfiles: {Object.keys(state.profiles).length}</p>
-      <p>Admin: {isAdmin ? 'si' : 'no'}</p>
+      <p>Super: {isSuperadmin ? 'si' : 'no'}</p>
       <p>Temas: {state.contentBank.topics.length}</p>
+      <p>Codigo: {nora?.accessCode ?? 'ninguno'}</p>
       <Button
         onClick={() => {
-          const result = loginAdmin('4716')
+          const result = loginSuperadmin('4716')
           if (!result.ok) throw new Error(result.error)
         }}
       >
@@ -23,7 +25,12 @@ function Probe() {
       </Button>
       <Button
         onClick={() => {
-          addChildProfile({ name: 'Nora', birthDate: '2020-01-01', grade: 1 })
+          addChildProfile({
+            name: 'Nora',
+            birthDate: '2020-01-01',
+            grade: 1,
+            tutorId: 'tutor-sorova',
+          })
         }}
       >
         Add child
@@ -60,10 +67,11 @@ describe('AppContext integration', () => {
     expect(screen.getByText(/Perfiles: 3/)).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Login' }))
-    expect(screen.getByText('Admin: si')).toBeInTheDocument()
+    expect(screen.getByText('Super: si')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add child' }))
     expect(screen.getByText(/Perfiles: 4/)).toBeInTheDocument()
+    expect(screen.getByText('Codigo: NORA010120')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Add topic' }))
     expect(screen.getByText('Temas: 1')).toBeInTheDocument()

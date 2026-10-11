@@ -28,7 +28,7 @@ import type { GameId, GameLevelMeta, LessonDefinition, ReadingStats, TypingStats
 
 export function DashboardPage() {
   const navigate = useNavigate()
-  const { ready, activeProfile, getGameProgress, state, updateProfileAvatar, updateChildProfile } =
+  const { ready, activeProfile, sessionRole, getGameProgress, state, updateProfileAvatar, updateChildProfile } =
     useApp()
   const [editingAvatar, setEditingAvatar] = useState(false)
   const [editingBirthDate, setEditingBirthDate] = useState(false)
@@ -153,17 +153,20 @@ export function DashboardPage() {
           <div className="mt-5 rounded-[1.5rem] bg-sand/60 p-4 sm:p-5">
             <h2 className="mb-3 font-display text-xl font-bold">Fecha de nacimiento</h2>
             <p className="mb-3 text-sm font-semibold text-ink-soft">
-              Con tu edad te mostramos temas y material a tu nivel.
+              {sessionRole === 'child'
+                ? 'Tu tutor guarda esta fecha. Con ella se crea tu código de acceso.'
+                : 'Con tu edad te mostramos temas y material a tu nivel.'}
             </p>
             <input
               type="date"
-              className="w-full max-w-xs rounded-xl border-2 border-ink/10 px-3 py-2 font-bold"
+              className="w-full max-w-xs rounded-xl border-2 border-ink/10 px-3 py-2 font-bold disabled:opacity-70"
               value={activeProfile.birthDate ?? ''}
-              onChange={(e) =>
+              disabled={sessionRole === 'child'}
+              onChange={(e) => {
                 updateChildProfile(activeProfile.id, {
                   birthDate: e.target.value || null,
                 })
-              }
+              }}
             />
           </div>
         ) : null}

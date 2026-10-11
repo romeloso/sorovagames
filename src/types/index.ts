@@ -11,7 +11,7 @@ export type GameId =
   | 'technology'
   | 'creativity'
 
-export type SessionRole = 'child' | 'admin'
+export type SessionRole = 'child' | 'tutor' | 'superadmin'
 
 /** 0 = preescolar, 1–6 = grados de primaria. */
 export type SchoolGrade = 0 | 1 | 2 | 3 | 4 | 5 | 6
@@ -44,10 +44,23 @@ export interface ChildProfileSeed {
   grade?: SchoolGrade | null
 }
 
+export interface TutorAccount {
+  id: string
+  name: string
+  /** Código que el tutor escribe para entrar. Lo ve el superadministrador. */
+  accessCode: string
+  active: boolean
+  createdAt: string
+}
+
 export interface ChildProfile extends ChildProfileSeed {
   birthDate: string | null
   /** Grado escolar (0 preescolar … 6°). */
   grade: SchoolGrade | null
+  /** Tutor que creó o tiene a cargo este perfil. */
+  tutorId: string | null
+  /** Nombre + fecha (DDMMAA). Null si falta la fecha. */
+  accessCode: string | null
   level: number
   xp: number
   points: number
@@ -403,7 +416,9 @@ export interface AppState {
   version: number
   soundEnabled: boolean
   activeProfileId: string | null
+  activeTutorId: string | null
   sessionRole: SessionRole
+  tutors: Record<string, TutorAccount>
   profiles: Record<string, ChildProfile>
   progress: Record<string, Record<GameId, GameProgress>>
   contentBank: ContentBank

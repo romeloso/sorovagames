@@ -23,7 +23,7 @@ Reestructura el juego de lectura de Sorova Games. El resto de juegos (tecleo, so
 4. Si la palabra lleva imagen, regístrala una sola vez en `pictures.ts`.
 5. Ejecuta `npm test`.
 
-Para material creado por un adulto sin tocar código, usa el panel administrador (PIN `4716`), pestaña Material. Una palabra nueva entra en la ciudad de las palabras y en el taller. Un cuento entra en el reino de las historias.
+Para material creado por un tutor sin tocar código, usa el panel del tutor, pestaña Material. Una palabra nueva entra en la ciudad de las palabras y en el taller. Un cuento entra en el reino de las historias.
 
 ## Audio
 
@@ -33,7 +33,7 @@ Para sustituirla por grabaciones, implementa `speakSpanish` leyendo archivos en 
 
 ## Persistencia y permisos
 
-La app no tiene cuentas separadas de tutor y niño. Quien usa el dispositivo comparte el mismo estado. El PIN de administrador protege la edición del material. El informe familiar pide confirmación de adulto en la pantalla; eso no es un control de seguridad.
+El niño entra con su código. El tutor administra sus perfiles y el material. El superadministrador administra las cuentas de tutor. El informe familiar pide confirmación de adulto en la pantalla; eso no sustituye el rol de tutor.
 
 `server/reading-schema.sql` describe un modelo relacional para el día en que cada tutor tenga su propia cuenta. No está aplicado: el servidor actual guarda el estado completo en `app_state`.
 

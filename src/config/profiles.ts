@@ -1,7 +1,14 @@
 import { defaultAvatarFor } from '@/config/avatars'
 import type { ChildProfileSeed } from '@/types'
 
-/** Semilla inicial. Luego se administran dinámicamente desde el panel. */
+/** Tutor de demostración. El superadministrador puede desactivarlo o crear otros. */
+export const DEMO_TUTOR = {
+  id: 'tutor-sorova',
+  name: 'Familia Sorova',
+  accessCode: 'FAMILIASOROVA',
+} as const
+
+/** Semilla inicial. El niño entra con nombre + fecha, no eligiendo la tarjeta. */
 export const PROFILE_SEEDS: ChildProfileSeed[] = [
   {
     id: 'isabella',
@@ -9,7 +16,7 @@ export const PROFILE_SEEDS: ChildProfileSeed[] = [
     avatar: '🦊',
     avatarImage: defaultAvatarFor('isabella'),
     accent: '#EC4899',
-    birthDate: null,
+    birthDate: '2016-03-15',
     grade: null,
   },
   {
@@ -18,7 +25,7 @@ export const PROFILE_SEEDS: ChildProfileSeed[] = [
     avatar: '🐰',
     avatarImage: defaultAvatarFor('sophia'),
     accent: '#F59E0B',
-    birthDate: null,
+    birthDate: '2017-12-04',
     grade: null,
   },
   {
@@ -27,7 +34,7 @@ export const PROFILE_SEEDS: ChildProfileSeed[] = [
     avatar: '🐱',
     avatarImage: defaultAvatarFor('valentina'),
     accent: '#3B82F6',
-    birthDate: null,
+    birthDate: '2018-07-22',
     grade: null,
   },
 ]
@@ -42,9 +49,9 @@ export const ACCENT_PALETTE = [
   '#FDE047',
 ] as const
 
-/** Acceso al módulo administrador (MVP local). */
+/** Acceso del superadministrador. Cada tutor tiene su propio código. */
 export const ADMIN_CONFIG = {
-  roleLabel: 'Administrador',
-  /** PIN simple para padres/admin en el MVP local. */
+  roleLabel: 'Superadministrador',
+  /** PIN del superadministrador en esta instalación. */
   pin: '4716',
 } as const

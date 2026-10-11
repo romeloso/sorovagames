@@ -1,4 +1,5 @@
-import { ACCENT_PALETTE, PROFILE_SEEDS } from '@/config/profiles'
+import { ACCENT_PALETTE, DEMO_TUTOR, PROFILE_SEEDS } from '@/config/profiles'
+import { childAccessCode } from '@/domain/accessCode'
 import { defaultAvatarFor, seedAvatarLibraryItems } from '@/config/avatars'
 import { createInitialGameProgress } from '@/domain/progress'
 import { getAvailableReadingLevels } from '@/data/games/reading/levels'
@@ -6,7 +7,7 @@ import { TYPING_LEVELS } from '@/data/games/typing/levels'
 import { getWordSearchLevels } from '@/data/games/wordsearch/levels'
 import { getSubjectLevels } from '@/data/subjects/catalog'
 import { createAvatarLibraryItem } from '@/services/contentService'
-import type { AppState, ChildProfile, ContentBank, GameId, GameProgress, SchoolGrade } from '@/types'
+import type { AppState, ChildProfile, ContentBank, GameId, GameProgress, SchoolGrade, TutorAccount } from '@/types'
 
 function nowIso() {
   return new Date().toISOString()
@@ -16,11 +17,24 @@ export function emptyContentBank(): ContentBank {
   return { words: [], passages: [], topics: [], avatarLibrary: [] }
 }
 
+export function createDemoTutor(): TutorAccount {
+  return {
+    id: DEMO_TUTOR.id,
+    name: DEMO_TUTOR.name,
+    accessCode: DEMO_TUTOR.accessCode,
+    active: true,
+    createdAt: nowIso(),
+  }
+}
+
 export function createProfileFromSeed(seed: (typeof PROFILE_SEEDS)[number]): ChildProfile {
+  const birthDate = seed.birthDate ?? null
   return {
     ...seed,
-    birthDate: seed.birthDate ?? null,
+    birthDate,
     grade: seed.grade ?? null,
+    tutorId: DEMO_TUTOR.id,
+    accessCode: childAccessCode(seed.name, birthDate),
     level: 1,
     xp: 0,
     points: 0,
@@ -39,21 +53,26 @@ export function createChildProfile(input: {
   grade?: SchoolGrade | null
   avatarImage?: string
   accent?: string
+  tutorId?: string | null
 }): ChildProfile {
   const id = `child-${crypto.randomUUID().slice(0, 8)}`
   const accent =
     input.accent ??
     ACCENT_PALETTE[Math.floor(Math.random() * ACCENT_PALETTE.length)] ??
     '#6366F1'
+  const name = input.name.trim()
+  const birthDate = input.birthDate ?? null
 
   return {
     id,
-    name: input.name.trim(),
+    name,
     avatar: '⭐',
     avatarImage: input.avatarImage ?? defaultAvatarFor('isabella'),
     accent,
-    birthDate: input.birthDate ?? null,
+    birthDate,
     grade: input.grade ?? null,
+    tutorId: input.tutorId ?? null,
+    accessCode: childAccessCode(name, birthDate),
     level: 1,
     xp: 0,
     points: 0,
@@ -98,7 +117,9 @@ export function createInitialAppState(soundEnabled = true): AppState {
     version: 3,
     soundEnabled,
     activeProfileId: null,
+    activeTutorId: null,
     sessionRole: 'child',
+    tutors: { [DEMO_TUTOR.id]: createDemoTutor() },
     profiles,
     progress,
     contentBank: {

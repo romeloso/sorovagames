@@ -27,7 +27,8 @@ async function main() {
   await page.reload()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/profiles.png', fullPage: true })
 
-  await page.getByRole('button', { name: /Isabella/i }).click()
+  await page.getByLabel('Código del niño').fill('ISABELLA150316')
+  await page.getByRole('button', { name: 'Entrar a jugar' }).click()
   await page.waitForURL('**/dashboard')
   await page.getByRole('heading', { name: /¡Hola, Isabella!/i }).waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/dashboard.png', fullPage: true })

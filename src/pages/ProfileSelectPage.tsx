@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LobbyIntro, shouldShowLobbyIntro } from '@/components/brand/LobbyIntro'
 import { TopBar } from '@/components/layout/TopBar'
-import { ProfileCard } from '@/components/profile/ProfileCard'
 import { Button } from '@/components/ui/Button'
 import { PageShell } from '@/components/ui/PageShell'
 import { APP_CONFIG } from '@/config/app'
@@ -10,9 +9,10 @@ import { useApp } from '@/context/AppContext'
 
 export function ProfileSelectPage() {
   const navigate = useNavigate()
-  const { state, selectProfile, ready } = useApp()
-  const profiles = Object.values(state.profiles)
+  const { ready, loginChild } = useApp()
   const [showIntro, setShowIntro] = useState(() => shouldShowLobbyIntro())
+  const [code, setCode] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   if (!ready) {
     return (
@@ -29,7 +29,7 @@ export function ProfileSelectPage() {
   return (
     <PageShell wide>
       <TopBar />
-      <section className="mb-8 text-center">
+      <section className="mx-auto mb-8 max-w-xl text-center">
         <div className="mb-4 flex justify-center">
           <img
             src={APP_CONFIG.brandImage}
@@ -44,25 +44,49 @@ export function ProfileSelectPage() {
           ¿Quién va a jugar hoy?
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-lg font-semibold text-ink-soft">
-          Elige tu perfil para guardar tu aventura, tus estrellas y tus monedas.
+          Escribe tu código. Es tu nombre y tu fecha: día, mes y año. Por ejemplo, SOPHIA041217.
         </p>
+        <form
+          className="mx-auto mt-6 max-w-md space-y-3 text-left"
+          onSubmit={(event) => {
+            event.preventDefault()
+            const result = loginChild(code)
+            if (!result.ok) {
+              setError(result.error ?? 'No encontramos ese código.')
+              return
+            }
+            navigate('/dashboard')
+          }}
+        >
+          <label className="block text-sm font-bold text-ink-soft" htmlFor="child-access-code">
+            Código del niño
+            <input
+              id="child-access-code"
+              aria-label="Código del niño"
+              value={code}
+              autoCapitalize="characters"
+              autoComplete="off"
+              onChange={(event) => {
+                setCode(event.target.value.toUpperCase())
+                setError(null)
+              }}
+              className="mt-1 w-full rounded-2xl border-2 border-ink/10 px-4 py-3 text-center font-display text-2xl font-bold tracking-wide outline-none focus:border-teal"
+              placeholder="SOPHIA041217"
+            />
+          </label>
+          {error ? <p className="font-bold text-coral">{error}</p> : null}
+          <Button type="submit" className="w-full">
+            Entrar a jugar
+          </Button>
+        </form>
       </section>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {profiles.map((profile) => (
-          <ProfileCard
-            key={profile.id}
-            profile={profile}
-            onSelect={() => {
-              selectProfile(profile.id)
-              navigate('/dashboard')
-            }}
-          />
-        ))}
-      </div>
 
-      <div className="mt-10 flex justify-center">
-        <Button variant="secondary" onClick={() => navigate('/admin')}>
-          Acceso Administrador
+      <div className="flex flex-wrap justify-center gap-3">
+        <Button variant="secondary" onClick={() => navigate('/tutor')}>
+          Acceso tutor
+        </Button>
+        <Button variant="secondary" onClick={() => navigate('/superadmin')}>
+          Acceso superadministrador
         </Button>
       </div>
     </PageShell>

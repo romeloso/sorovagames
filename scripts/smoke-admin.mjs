@@ -13,26 +13,24 @@ async function main() {
   })
   await page.reload()
 
-  // Avatars visible
-  await page.getByRole('img', { name: /Avatar de Isabella/i }).waitFor()
-  await page.getByRole('img', { name: /Avatar de Sophia/i }).waitFor()
-  await page.getByRole('img', { name: /Avatar de Valentina/i }).waitFor()
+  await page.getByLabel('Código del niño').waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/avatars_profiles.png', fullPage: true })
 
-  // Admin login
-  await page.getByRole('button', { name: /Acceso Administrador/i }).click()
-  await page.waitForURL('**/admin')
+  await page.getByRole('button', { name: /Acceso superadministrador/i }).click()
+  await page.waitForURL('**/superadmin')
   await page.getByPlaceholder('••••').fill('4716')
   await page.getByRole('button', { name: 'Entrar' }).click()
-  await page.waitForURL('**/admin/panel')
-  await page.getByText('Panel Administrador').waitFor()
+  await page.waitForURL('**/panel')
+  await page.getByText('Panel del superadministrador').waitFor()
 
   // Add child with birth date
   await page.getByRole('button', { name: 'Niños' }).click()
-  await page.getByPlaceholder('Nombre').fill('Lucas')
-  await page.locator('input[type="date"]').first().fill('2018-05-10')
-  await page.getByRole('button', { name: 'Guardar perfil' }).click()
-  await page.getByText(/Niño o niña agregado/i).waitFor()
+  const addForm = page.locator('section', { has: page.getByRole('heading', { name: /Agregar niño/i }) })
+  await addForm.getByPlaceholder('Nombre').fill('Lucas')
+  await addForm.getByLabel('Tutor a cargo').selectOption({ label: 'Familia Sorova' })
+  await addForm.locator('input[type="date"]').fill('2018-05-10')
+  await addForm.getByRole('button', { name: 'Guardar perfil' }).click()
+  await page.getByText(/LUCAS100518/).waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/admin_children.png', fullPage: true })
 
   // Add study topic
@@ -64,7 +62,7 @@ async function main() {
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/admin_material.png', fullPage: true })
 
   // Back to kids and open reading quiz level path via hub
-  await page.getByRole('button', { name: /Cerrar sesión admin/i }).click()
+  await page.getByRole('button', { name: 'Cerrar sesión' }).click()
   await page.waitForURL((url) => url.pathname === '/')
   await page.getByRole('heading', { name: /¿Quién va a jugar hoy/i }).waitFor()
   await page.getByText('Lucas').waitFor()

@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppProvider } from '@/context/AppContext'
 import { AchievementsPage } from '@/pages/AchievementsPage'
-import { AdminLoginPage } from '@/pages/AdminLoginPage'
+import { StaffLoginPage } from '@/pages/AdminLoginPage'
 import { AdminPanelPage } from '@/pages/AdminPanelPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { GameHubPage } from '@/pages/GameHubPage'
@@ -30,8 +30,11 @@ export default function App() {
           <Route path="/games/:gameSlug/lesson/:lessonId" element={<LessonPage />} />
           <Route path="/games/sopa-de-letras/play/:puzzleId" element={<WordSearchPage />} />
           <Route path="/result" element={<ResultPage />} />
-          <Route path="/admin" element={<AdminLoginPage />} />
-          <Route path="/admin/panel" element={<AdminPanelPage />} />
+          <Route path="/tutor" element={<StaffLoginPage mode="tutor" />} />
+          <Route path="/superadmin" element={<StaffLoginPage mode="superadmin" />} />
+          <Route path="/panel" element={<AdminPanelPage />} />
+          <Route path="/admin" element={<Navigate to="/superadmin" replace />} />
+          <Route path="/admin/panel" element={<Navigate to="/panel" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

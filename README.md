@@ -14,7 +14,9 @@ Plataforma educativa infantil (**Sorova Games**).
 - **Leo y Escribo**: seis mundos (sonidos, letras, sílabas, palabras, historias y escritura), diagnóstico e informe familiar. Detalle en `docs/leo-y-escribo.md`
 - **Matemáticas, Ciencias, Inglés y Tecnología**: seis mundos y 120 actividades por materia, con el mismo motor de lecciones. Guía en `docs/plataforma-materias.md`
 - **Teclea como una experta**
-- Panel **Administrador** (PIN `4716`): niños, temas, avatares, progreso y material
+- **Tutor**: crea los perfiles de sus niños, ve su progreso y el material. Entra con un código propio.
+- **Superadministrador** (PIN `4716`): crea las cuentas de tutor y ve todos los perfiles.
+- El niño entra con un código de nombre + fecha. Sophia, 4 de diciembre de 2017, usa `SOPHIA041217`.
 - Recompensas, logros y mapa de aventura
 - Persistencia en PostgreSQL de Railway (`server/`) y copia local si la base no responde
 
@@ -46,15 +48,26 @@ npm run load-test     # carga cliente + umbral de lentitud
 
 Rendimiento, caché, índices y rate limiting: ver `docs/PERFORMANCE.md`.
 
-## Administrador
+## Roles
 
-1. En la pantalla de perfiles, toca **Acceso Administrador**
-2. PIN: `4716`
-3. Pestaña **Niños**: agregar perfiles, fechas de nacimiento y fotos
-4. Pestaña **Temas**: temas por materia con rango de edad
-5. Pestaña **Avatares**: galería central de fotos/avatares
-6. Pestaña **Progreso**: avance de cada niño
-7. Pestaña **Material**: palabras/quizzes e historias (también con edad)
+Hay tres roles. El niño no elige una tarjeta: escribe su código.
+
+1. **Niño.** Código = nombre en mayúsculas, sin tildes, más la fecha en día, mes y año de dos cifras. `SOPHIA041217` es Sophia, 4 de diciembre de 2017.
+2. **Tutor.** Crea esos perfiles y consulta el progreso de sus niños. En una instalación nueva, la cuenta de demostración es `FAMILIASOROVA`.
+3. **Superadministrador.** PIN `4716`. Crea, activa, cambia el código y elimina cada tutor junto con los perfiles a su cargo.
+
+El código del niño identifica el perfil en esta instalación. No es una contraseña secreta: quien conoce el nombre y la fecha puede formarlo. El superadministrador entrega a cada tutor un código distinto.
+
+## Tutor y superadministrador
+
+1. En el inicio, toca **Acceso tutor** o **Acceso superadministrador**
+2. El tutor escribe su código. El superadministrador escribe el PIN `4716`
+3. Pestaña **Tutores** (solo superadministrador): cuentas de madres, padres o tutores
+4. Pestaña **Niños**: nombre, fecha y código de acceso
+5. Pestaña **Temas**: temas por materia con rango de edad
+6. Pestaña **Avatares**: galería central de fotos/avatares
+7. Pestaña **Progreso**: el superadministrador ve un tablero con tabla filtrable (nivel, edad, grado, XP, monedas, racha, logros, lectura y tecleo, sin foto). El tutor ve la tarjeta de cada niño.
+8. Pestaña **Material**: palabras/quizzes e historias (también con edad)
 
 ## Cómo agregar una materia
 
