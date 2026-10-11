@@ -60,7 +60,7 @@ El código del niño identifica el perfil en esta instalación. No es una contra
 
 ## Tutor y superadministrador
 
-1. En el inicio, toca **Acceso tutor** o **Acceso superadministrador**
+1. En el inicio, el tutor toca **Acceso tutor**. El superadministrador toca el logotipo de Sorova Games
 2. El tutor escribe su código. El superadministrador escribe el PIN `4716`
 3. Pestaña **Tutores** (solo superadministrador): cuentas de madres, padres o tutores
 4. Pestaña **Niños**: nombre, fecha y código de acceso
