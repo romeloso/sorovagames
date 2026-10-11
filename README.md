@@ -6,7 +6,7 @@ Plataforma educativa infantil (**Sorova Games**).
 
 ## Qué incluye (MVP)
 
-- Identidad visual Sorova + intro animado en el lobby
+- Identidad visual Sorova en el lobby
 - **Sopa de letras** con tablero navy y resaltados de marca
 - Perfiles dinámicos con fecha de nacimiento y edad
 - Avatares centralizados (galería + fotos subidas)

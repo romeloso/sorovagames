@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LobbyIntro, shouldShowLobbyIntro } from '@/components/brand/LobbyIntro'
 import { TopBar } from '@/components/layout/TopBar'
 import { Button } from '@/components/ui/Button'
 import { PageShell } from '@/components/ui/PageShell'
@@ -10,7 +9,6 @@ import { useApp } from '@/context/AppContext'
 export function ProfileSelectPage() {
   const navigate = useNavigate()
   const { ready, loginChild } = useApp()
-  const [showIntro, setShowIntro] = useState(() => shouldShowLobbyIntro())
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
 
@@ -20,10 +18,6 @@ export function ProfileSelectPage() {
         <p className="font-display text-2xl font-bold">Cargando {APP_CONFIG.name}...</p>
       </PageShell>
     )
-  }
-
-  if (showIntro) {
-    return <LobbyIntro onDone={() => setShowIntro(false)} />
   }
 
   return (
