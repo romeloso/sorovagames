@@ -72,10 +72,10 @@ async function main() {
   await page.waitForURL('**/dashboard')
   await page.getByRole('img', { name: /Avatar de Isabella/i }).waitFor()
   await page.getByText(/Temas para ti|Sílabas ma me mi/i).first().waitFor()
-  await page.getByRole('button', { name: /Aprende a leer/i }).click()
+  await page.getByRole('button', { name: /Leo y Escribo/i }).click()
   await page.waitForURL('**/games/aprende-a-leer')
-  await page.getByText(/Quiz de palabras/i).waitFor()
-  await page.getByText(/Práctica de lectura/i).waitFor()
+  await page.getByText(/La ciudad de las palabras/i).waitFor()
+  await page.getByText(/El taller de escritores/i).waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/reading_modules.png', fullPage: true })
 
   console.log('SMOKE_ADMIN_OK')

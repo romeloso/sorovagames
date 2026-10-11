@@ -11,7 +11,8 @@ Plataforma educativa infantil (**Sorova Games**).
 - Perfiles dinámicos con fecha de nacimiento y edad
 - Avatares centralizados (galería + fotos subidas)
 - Dashboard con XP, monedas, racha, temas adaptados por edad
-- **Aprende a leer** niveles 1–8: letras, sílabas, palabras, quiz, práctica e historias
+- **Leo y Escribo**: seis mundos (sonidos, letras, sílabas, palabras, historias y escritura), diagnóstico e informe familiar. Detalle en `docs/leo-y-escribo.md`
+- **Matemáticas, Ciencias, Inglés y Tecnología**: seis mundos y 120 actividades por materia, con el mismo motor de lecciones. Guía en `docs/plataforma-materias.md`
 - **Teclea como una experta**
 - Panel **Administrador** (PIN `4716`): niños, temas, avatares, progreso y material
 - Recompensas, logros y mapa de aventura
@@ -54,6 +55,10 @@ Rendimiento, caché, índices y rate limiting: ver `docs/PERFORMANCE.md`.
 5. Pestaña **Avatares**: galería central de fotos/avatares
 6. Pestaña **Progreso**: avance de cada niño
 7. Pestaña **Material**: palabras/quizzes e historias (también con edad)
+
+## Cómo agregar una materia
+
+El recorrido está en `docs/plataforma-materias.md`: datos de currículo, ficha en el registro, progreso por niño y prueba del catálogo.
 
 ## Cómo agregar un juego nuevo
 

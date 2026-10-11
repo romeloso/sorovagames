@@ -4,6 +4,7 @@ import { createInitialGameProgress } from '@/domain/progress'
 import { getAvailableReadingLevels } from '@/data/games/reading/levels'
 import { TYPING_LEVELS } from '@/data/games/typing/levels'
 import { getWordSearchLevels } from '@/data/games/wordsearch/levels'
+import { getSubjectLevels } from '@/data/subjects/catalog'
 import { createAvatarLibraryItem } from '@/services/contentService'
 import type { AppState, ChildProfile, ContentBank, GameId, GameProgress, SchoolGrade } from '@/types'
 
@@ -76,9 +77,10 @@ export function createDefaultProgressForChild(
     ),
     wordsearch: createInitialGameProgress('wordsearch', getWordSearchLevels()),
     memory: createInitialGameProgress('memory', []),
-    math: createInitialGameProgress('math', []),
-    science: createInitialGameProgress('science', []),
-    english: createInitialGameProgress('english', []),
+    math: createInitialGameProgress('math', getSubjectLevels('math')),
+    science: createInitialGameProgress('science', getSubjectLevels('science')),
+    english: createInitialGameProgress('english', getSubjectLevels('english')),
+    technology: createInitialGameProgress('technology', getSubjectLevels('technology')),
     creativity: createInitialGameProgress('creativity', []),
   }
 }

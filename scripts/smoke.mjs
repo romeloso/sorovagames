@@ -32,12 +32,12 @@ async function main() {
   await page.getByRole('heading', { name: /¡Hola, Isabella!/i }).waitFor()
   await page.screenshot({ path: '/opt/cursor/artifacts/screenshots/dashboard.png', fullPage: true })
 
-  await page.getByRole('button', { name: /Aprende a leer/i }).click()
+  await page.getByRole('button', { name: /Leo y Escribo/i }).click()
   await page.waitForURL('**/games/aprende-a-leer')
-  await page.getByRole('button', { name: /Letras A B C/i }).click()
-  await page.waitForURL('**/lesson/reading-l1-a')
+  await page.getByRole('button', { name: /¿Qué sonido escuchaste\?/i }).click()
+  await page.waitForURL('**/lesson/reading-sonidos-1')
 
-  for (const answer of ['A', 'B', 'C', 'M']) {
+  for (const answer of ['SOL', 'LUNA', 'OSO', 'PAN']) {
     await page.getByRole('button', { name: answer, exact: true }).click()
     await page.waitForTimeout(900)
   }

@@ -6,7 +6,14 @@ import { ACHIEVEMENTS } from '@/data/achievements'
 import { cn } from '@/lib/cn'
 
 export function AchievementsPage() {
-  const { activeProfile } = useApp()
+  const { ready, activeProfile } = useApp()
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
 
   return (

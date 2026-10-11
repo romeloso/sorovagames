@@ -7,6 +7,7 @@ import { getGameBySlug } from '@/data/games/registry'
 import { getAvailableReadingLevels, getReadingLesson } from '@/data/games/reading/levels'
 import { TYPING_LEVELS, getTypingLesson } from '@/data/games/typing/levels'
 import { getWordSearchLevels, getWordSearchLesson } from '@/data/games/wordsearch/levels'
+import { getSubjectLesson, getSubjectLevels, isSubjectGame } from '@/data/subjects/catalog'
 import { getLevelProgress } from '@/domain/progress'
 import { ageFromBirthDate, formatAge } from '@/lib/age'
 import { effectiveLearningAge, formatGrade } from '@/lib/grade'
@@ -17,8 +18,15 @@ import type { GameLevelMeta } from '@/types'
 export function GameHubPage() {
   const { gameSlug } = useParams()
   const navigate = useNavigate()
-  const { activeProfile, getGameProgress, state } = useApp()
+  const { ready, activeProfile, getGameProgress, state } = useApp()
 
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined
@@ -76,7 +84,8 @@ export function GameHubPage() {
         ? TYPING_LEVELS.filter((level) => level.lessonIds.length > 0)
         : game.id === 'wordsearch'
           ? getWordSearchLevels(age, grade)
-          : []
+          : getSubjectLevels(game.id)
+  const worldWord = isSubjectGame(game.id) ? 'Mundo' : 'Nivel'
   const progress = getGameProgress(game.id)
 
   return (
@@ -127,7 +136,7 @@ export function GameHubPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h2 className="font-display text-2xl font-bold">
-                    {level.icon} Nivel {level.order}: {level.title}
+                    {level.icon} {worldWord} {level.order}: {level.title}
                   </h2>
                   <p className="font-semibold text-ink-soft">{level.subtitle}</p>
                   {levelProgress ? (
@@ -149,7 +158,9 @@ export function GameHubPage() {
                       ? getReadingLesson(lessonId, state.contentBank, age)
                       : game.id === 'typing'
                         ? getTypingLesson(lessonId)
-                        : getWordSearchLesson(lessonId)
+                        : game.id === 'wordsearch'
+                          ? getWordSearchLesson(lessonId)
+                          : getSubjectLesson(game.id, lessonId)
                   const lessonProgress = progress?.lessonProgress[lessonId]
                   const lessonUnlocked = Boolean(lessonProgress?.unlocked) && unlocked
 

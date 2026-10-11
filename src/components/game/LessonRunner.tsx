@@ -74,6 +74,9 @@ export function LessonRunner({ lesson, renderActivity, onComplete, onExit }: Les
         <div>
           <p className="text-sm font-bold uppercase tracking-wide text-ink-soft">Lección</p>
           <h2 className="font-display text-3xl font-bold text-ink">{lesson.title}</h2>
+          {lesson.objective ? (
+            <p className="mt-1 max-w-xl text-sm font-semibold text-ink-soft">{lesson.objective}</p>
+          ) : null}
         </div>
         <Button variant="secondary" size="md" onClick={onExit}>
           Salir

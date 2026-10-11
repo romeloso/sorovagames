@@ -9,7 +9,7 @@ import type { AdaptiveHint, LessonSessionResult, RewardPayload } from '@/types'
 
 export function WordSearchPage() {
   const { puzzleId } = useParams()
-  const { activeProfile, completeLesson, playSound } = useApp()
+  const { ready, activeProfile, completeLesson, playSound } = useApp()
   const [finished, setFinished] = useState<{
     result: LessonSessionResult
     reward: RewardPayload
@@ -21,6 +21,13 @@ export function WordSearchPage() {
     [puzzleId],
   )
 
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
   if (!puzzle) {
     return (

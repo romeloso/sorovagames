@@ -5,6 +5,8 @@ import { useApp } from '@/context/AppContext'
 import { getAvailableReadingLevels } from '@/data/games/reading/levels'
 import { TYPING_LEVELS } from '@/data/games/typing/levels'
 import { getWordSearchLevels } from '@/data/games/wordsearch/levels'
+import { getGameById } from '@/data/games/registry'
+import { getSubjectLevels, SUBJECT_GAME_IDS } from '@/data/subjects/catalog'
 import { getLevelProgress } from '@/domain/progress'
 import { ageFromBirthDate } from '@/lib/age'
 import { effectiveLearningAge } from '@/lib/grade'
@@ -77,8 +79,15 @@ function AdventurePath({
 
 export function ProgressMapPage() {
   const navigate = useNavigate()
-  const { activeProfile, getGameProgress, state } = useApp()
+  const { ready, activeProfile, getGameProgress, state } = useApp()
 
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
 
   const age = effectiveLearningAge(ageFromBirthDate(activeProfile.birthDate), activeProfile.grade)
@@ -96,7 +105,7 @@ export function ProgressMapPage() {
           onOpen={() => navigate('/games/sopa-de-letras')}
         />
         <AdventurePath
-          title="📚 Aventura de lectura"
+          title="📚 Leo y Escribo"
           levels={getAvailableReadingLevels(state.contentBank, age, grade)}
           progress={getGameProgress('reading')}
           onOpen={() => navigate('/games/aprende-a-leer')}
@@ -107,6 +116,19 @@ export function ProgressMapPage() {
           progress={getGameProgress('typing')}
           onOpen={() => navigate('/games/teclea-como-una-experta')}
         />
+        {SUBJECT_GAME_IDS.map((subjectId) => {
+          const game = getGameById(subjectId)
+          if (!game) return null
+          return (
+            <AdventurePath
+              key={subjectId}
+              title={`${game.icon} ${game.title}`}
+              levels={getSubjectLevels(subjectId)}
+              progress={getGameProgress(subjectId)}
+              onOpen={() => navigate(`/games/${game.slug}`)}
+            />
+          )
+        })}
       </div>
     </PageShell>
   )

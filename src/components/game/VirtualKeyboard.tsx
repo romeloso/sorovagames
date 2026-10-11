@@ -9,9 +9,13 @@ const ROWS = [
 export function VirtualKeyboard({
   highlightKey,
   onKey,
+  accents = false,
+  allowSpace = false,
 }: {
   highlightKey?: string
   onKey?: (key: string) => void
+  accents?: boolean
+  allowSpace?: boolean
 }) {
   const target = highlightKey?.toUpperCase()
 
@@ -40,6 +44,40 @@ export function VirtualKeyboard({
           })}
         </div>
       ))}
+      {accents || allowSpace ? (
+        <div className="flex justify-center gap-1.5 sm:gap-2">
+          {accents
+            ? ['Á', 'É', 'Í', 'Ó', 'Ú'].map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => onKey?.(key)}
+                  className="grid h-11 w-9 place-items-center rounded-xl bg-white/90 text-sm font-extrabold text-ink ring-1 ring-ink/10 sm:h-14 sm:w-12 sm:text-lg"
+                >
+                  {key}
+                </button>
+              ))
+            : null}
+          {allowSpace ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onKey?.('BORRAR')}
+                className="grid h-11 min-w-16 place-items-center rounded-xl bg-sand px-3 text-sm font-extrabold text-ink ring-1 ring-ink/10 sm:h-14"
+              >
+                Borrar
+              </button>
+              <button
+                type="button"
+                onClick={() => onKey?.('ESPACIO')}
+                className="grid h-11 min-w-24 place-items-center rounded-xl bg-white/90 px-3 text-sm font-extrabold text-ink ring-1 ring-ink/10 sm:h-14"
+              >
+                Espacio
+              </button>
+            </>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
 }

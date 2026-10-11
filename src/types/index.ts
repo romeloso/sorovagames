@@ -8,6 +8,7 @@ export type GameId =
   | 'math'
   | 'science'
   | 'english'
+  | 'technology'
   | 'creativity'
 
 export type SessionRole = 'child' | 'admin'
@@ -23,11 +24,15 @@ export type ActivityKind =
   | 'word_build'
   | 'word_quiz'
   | 'reading_practice'
+  | 'token_order'
+  | 'trace_letter'
   | 'key_press'
   | 'home_row'
   | 'letter_race'
   | 'syllable_type'
   | 'word_type'
+
+export type SkillMasteryStatus = 'not_evaluated' | 'developing' | 'needs_support' | 'mastered'
 
 export interface ChildProfileSeed {
   id: string
@@ -86,6 +91,10 @@ export interface BaseActivity {
   id: string
   kind: ActivityKind
   prompt: string
+  /** Texto que se puede escuchar. No sustituye una grabación profesional. */
+  speak?: string
+  hint?: string
+  imageAlt?: string
   xpReward?: number
   coinReward?: number
 }
@@ -174,6 +183,22 @@ export interface WordTypeActivity extends BaseActivity {
   target: string
 }
 
+/** Ordenar sílabas o palabras. */
+export interface TokenOrderActivity extends BaseActivity {
+  kind: 'token_order'
+  tokens: string[]
+  answer: string
+  separator: '' | ' '
+  image?: string
+}
+
+/** Trazado guiado. Las desviaciones pequeñas no se penalizan. */
+export interface TraceLetterActivity extends BaseActivity {
+  kind: 'trace_letter'
+  letter: string
+  checkpoints: Array<{ x: number; y: number }>
+}
+
 export type Activity =
   | LetterChoiceActivity
   | LetterFromImageActivity
@@ -187,6 +212,8 @@ export type Activity =
   | LetterRaceActivity
   | SyllableTypeActivity
   | WordTypeActivity
+  | TokenOrderActivity
+  | TraceLetterActivity
 
 export interface LessonDefinition {
   id: string
@@ -195,6 +222,10 @@ export interface LessonDefinition {
   title: string
   activities: Activity[]
   source?: 'builtin' | 'admin'
+  objective?: string
+  skillIds?: string[]
+  instructions?: string
+  estimatedMinutes?: number
 }
 
 export interface LessonProgress {
@@ -221,11 +252,30 @@ export interface GameProgress {
   stats: GameStats
 }
 
+export interface SkillProgressRecord {
+  skillId: string
+  independentCorrect: number
+  independentTotal: number
+  assistedCorrect: number
+  sessions: number
+  lastPracticedAt: string | null
+  nextReviewAt: string | null
+  status: SkillMasteryStatus
+}
+
+export interface ReadingPlacement {
+  completedAt: string
+  recommendedWorldId: string
+  summary: string
+}
+
 export interface ReadingStats {
   wordsLearned: string[]
   lessonsCompleted: number
   correctAnswers: number
   totalAnswers: number
+  skills?: Record<string, SkillProgressRecord>
+  placement?: ReadingPlacement
 }
 
 export interface TypingStats {
@@ -242,7 +292,15 @@ export interface WordSearchStats {
   wordsFound: number
 }
 
-export type GameStats = ReadingStats | TypingStats | WordSearchStats | Record<string, never>
+/** Progreso de una materia que no es lectura: precisión, intentos y habilidades. */
+export interface SubjectStats {
+  lessonsCompleted: number
+  correctAnswers: number
+  totalAnswers: number
+  skills?: Record<string, SkillProgressRecord>
+}
+
+export type GameStats = ReadingStats | TypingStats | WordSearchStats | SubjectStats | Record<string, never>
 
 export interface AchievementDefinition {
   id: string
@@ -268,6 +326,7 @@ export interface ActivityAttemptResult {
   timeMs: number
   typedChars?: number
   correctChars?: number
+  hintsUsed?: number
 }
 
 export interface LessonSessionResult {
@@ -280,6 +339,7 @@ export interface LessonSessionResult {
   durationMs: number
   wpm?: number
   words?: string[]
+  skillIds?: string[]
 }
 
 /** Material creado desde el panel administrador. */

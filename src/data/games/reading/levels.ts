@@ -1,85 +1,93 @@
 import type { ContentBank, GameLevelMeta, LessonDefinition, SchoolGrade } from '@/types'
-import { READING_LESSONS } from './content'
-import { READING_QUIZ_AND_PRACTICE_LESSONS } from './quizContent'
+import { LEO_LESSONS } from './curriculum'
 import { getCachedAdminReadingLessons } from '@/services/cache/contentCache'
 
-export const READING_LEVELS: GameLevelMeta[] = [
+export interface ReadingWorldMeta extends GameLevelMeta {
+  accent: string
+}
+
+const ADMIN_BY_WORLD: Record<string, string[]> = {
+  'reading-palabras': ['reading-admin-quiz'],
+  'reading-historias': ['reading-admin-passages'],
+  'reading-escritura': ['reading-admin-practice'],
+}
+
+export const READING_WORLDS: ReadingWorldMeta[] = [
   {
-    id: 'reading-l1',
+    id: 'reading-sonidos',
     gameId: 'reading',
     order: 1,
-    title: 'Letras',
-    subtitle: 'Reconoce las letras del abecedario',
-    icon: '🔤',
-    lessonIds: ['reading-l1-a', 'reading-l1-b'],
+    title: 'La isla de los sonidos',
+    subtitle: 'Escucha, rima y separa palabras',
+    icon: '🌊',
+    accent: '#3B82F6',
+    lessonIds: LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-sonidos').map((lesson) => lesson.id),
   },
   {
-    id: 'reading-l2',
+    id: 'reading-letras',
     gameId: 'reading',
     order: 2,
-    title: 'Letra e imagen',
-    subtitle: 'Asocia letras con palabras',
-    icon: '🍎',
-    lessonIds: ['reading-l2-a', 'reading-l2-b'],
+    title: 'El bosque de las letras',
+    subtitle: 'Vocales y los sonidos m y p',
+    icon: '🌳',
+    accent: '#EC4899',
+    lessonIds: LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-letras').map((lesson) => lesson.id),
   },
   {
-    id: 'reading-l3',
+    id: 'reading-silabas',
     gameId: 'reading',
     order: 3,
-    title: 'Sílabas',
-    subtitle: 'Forma sílabas sencillas',
+    title: 'La fábrica de sílabas',
+    subtitle: 'Une consonantes y vocales',
     icon: '🧩',
-    lessonIds: ['reading-l3-a', 'reading-l3-b'],
+    accent: '#F59E0B',
+    lessonIds: LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-silabas').map((lesson) => lesson.id),
   },
   {
-    id: 'reading-l4',
+    id: 'reading-palabras',
     gameId: 'reading',
     order: 4,
-    title: 'Palabras cortas',
-    subtitle: 'Lee palabras fáciles',
-    icon: '🐱',
-    lessonIds: ['reading-l4-a', 'reading-l4-b'],
+    title: 'La ciudad de las palabras',
+    subtitle: 'Lee palabras nuevas',
+    icon: '🏙️',
+    accent: '#10B981',
+    lessonIds: [
+      ...LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-palabras').map((lesson) => lesson.id),
+      ...(ADMIN_BY_WORLD['reading-palabras'] ?? []),
+    ],
   },
   {
-    id: 'reading-l5',
+    id: 'reading-historias',
     gameId: 'reading',
     order: 5,
-    title: 'Construir palabras',
-    subtitle: 'Ordena letras para formar palabras',
-    icon: '🏠',
-    lessonIds: ['reading-l5-a', 'reading-l5-b'],
+    title: 'El reino de las historias',
+    subtitle: 'Oraciones y cuentos cortos',
+    icon: '📖',
+    accent: '#8B5CF6',
+    lessonIds: [
+      ...LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-historias').map((lesson) => lesson.id),
+      ...(ADMIN_BY_WORLD['reading-historias'] ?? []),
+    ],
   },
   {
-    id: 'reading-l6',
+    id: 'reading-escritura',
     gameId: 'reading',
     order: 6,
-    title: 'Quiz de palabras',
-    subtitle: 'Identifica la palabra correcta',
-    icon: '🧠',
-    lessonIds: ['reading-l6-a', 'reading-l6-b', 'reading-admin-quiz'],
-  },
-  {
-    id: 'reading-l7',
-    gameId: 'reading',
-    order: 7,
-    title: 'Práctica de lectura',
-    subtitle: 'Lee y recibe corrección al instante',
-    icon: '📝',
-    lessonIds: ['reading-l7-a', 'reading-l7-b', 'reading-admin-practice'],
-  },
-  {
-    id: 'reading-l8',
-    gameId: 'reading',
-    order: 8,
-    title: 'Historias',
-    subtitle: 'Lee y responde preguntas',
-    icon: '📖',
-    lessonIds: ['reading-l8-a', 'reading-admin-passages'],
+    title: 'El taller de escritores',
+    subtitle: 'Traza, dicta y escribe frases',
+    icon: '✏️',
+    accent: '#6366F1',
+    lessonIds: [
+      ...LEO_LESSONS.filter((lesson) => lesson.levelId === 'reading-escritura').map((lesson) => lesson.id),
+      ...(ADMIN_BY_WORLD['reading-escritura'] ?? []),
+    ],
   },
 ]
 
+export const READING_LEVELS: GameLevelMeta[] = READING_WORLDS
+
 export function getBuiltinReadingLessons(): LessonDefinition[] {
-  return [...READING_LESSONS, ...READING_QUIZ_AND_PRACTICE_LESSONS]
+  return LEO_LESSONS
 }
 
 export function getReadingLessons(
@@ -102,7 +110,7 @@ export function getReadingLesson(
   return getReadingLessons(bank, age, grade).find((lesson) => lesson.id === lessonId)
 }
 
-/** Niveles con lecciones realmente disponibles según el bank, edad y grado. */
+/** Mundos con lecciones realmente disponibles según el bank, edad y grado. */
 export function getAvailableReadingLevels(
   bank?: ContentBank,
   age: number | null = null,
@@ -111,8 +119,17 @@ export function getAvailableReadingLevels(
   const lessons = getReadingLessons(bank, age, grade)
   const availableIds = new Set(lessons.map((lesson) => lesson.id))
 
-  return READING_LEVELS.map((level) => ({
-    ...level,
+  return READING_WORLDS.map((level) => ({
+    id: level.id,
+    gameId: level.gameId,
+    order: level.order,
+    title: level.title,
+    subtitle: level.subtitle,
+    icon: level.icon,
     lessonIds: level.lessonIds.filter((id) => availableIds.has(id)),
   })).filter((level) => level.lessonIds.length > 0)
+}
+
+export function getReadingWorld(worldId: string) {
+  return READING_WORLDS.find((world) => world.id === worldId)
 }

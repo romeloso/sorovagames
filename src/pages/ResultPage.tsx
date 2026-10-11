@@ -17,11 +17,18 @@ interface ResultState {
 export function ResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { activeProfile } = useApp()
+  const { ready, activeProfile } = useApp()
   const state = location.state as ResultState | null
 
   useCelebration(Boolean(state))
 
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
   if (!state) return <Navigate to="/dashboard" replace />
 

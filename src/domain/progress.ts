@@ -1,4 +1,5 @@
 import { APP_CONFIG } from '@/config/app'
+import { isIndependentSuccess, recordSkillPractice } from '@/domain/reading/mastery'
 import type {
   GameId,
   GameLevelMeta,
@@ -8,6 +9,7 @@ import type {
   LessonSessionResult,
   LevelProgress,
   ReadingStats,
+  SubjectStats,
   TypingStats,
 } from '@/types'
 import { starsFromAccuracy } from '@/domain/rewards'
@@ -18,7 +20,23 @@ export function createEmptyReadingStats(): ReadingStats {
     lessonsCompleted: 0,
     correctAnswers: 0,
     totalAnswers: 0,
+    skills: {},
   }
+}
+
+export function createEmptySubjectStats(): SubjectStats {
+  return {
+    lessonsCompleted: 0,
+    correctAnswers: 0,
+    totalAnswers: 0,
+    skills: {},
+  }
+}
+
+const MASTERY_GAMES = new Set<GameId>(['reading', 'math', 'science', 'english', 'technology'])
+
+export function usesMasteryGate(gameId: GameId) {
+  return MASTERY_GAMES.has(gameId)
 }
 
 export function createEmptyTypingStats(): TypingStats {
@@ -59,11 +77,13 @@ export function createInitialGameProgress(
     stats:
       gameId === 'reading'
         ? createEmptyReadingStats()
-        : gameId === 'typing'
-          ? createEmptyTypingStats()
-          : gameId === 'wordsearch'
-            ? { puzzlesCompleted: 0, wordsFound: 0 }
-            : {},
+        : usesMasteryGate(gameId)
+          ? createEmptySubjectStats()
+          : gameId === 'typing'
+            ? createEmptyTypingStats()
+            : gameId === 'wordsearch'
+              ? { puzzlesCompleted: 0, wordsFound: 0 }
+              : {},
   }
 }
 
@@ -160,14 +180,17 @@ export function applyLessonResult(
     const levelLessons = currentLevel.lessonIds
       .map((id) => lessonProgress[id])
       .filter(Boolean)
-    const avgAccuracy =
-      levelLessons.reduce((sum, item) => sum + (item?.bestAccuracy ?? 0), 0) /
-      Math.max(1, levelLessons.length)
-    const completedEnough =
-      levelLessons.filter((item) => (item?.completions ?? 0) > 0).length >=
-      Math.ceil(levelLessons.length * 0.5)
+    const played = levelLessons.filter((item) => (item?.completions ?? 0) > 0)
+    const readingGate = usesMasteryGate(result.gameId)
+    const avgAccuracy = readingGate
+      ? played.reduce((sum, item) => sum + (item?.bestAccuracy ?? 0), 0) / Math.max(1, played.length)
+      : levelLessons.reduce((sum, item) => sum + (item?.bestAccuracy ?? 0), 0) /
+        Math.max(1, levelLessons.length)
+    const threshold = readingGate ? 0.85 : APP_CONFIG.unlockThreshold
+    const neededRatio = readingGate ? 0.8 : 0.5
+    const completedEnough = played.length >= Math.ceil(levelLessons.length * neededRatio)
 
-    if (avgAccuracy >= APP_CONFIG.unlockThreshold && completedEnough) {
+    if (played.length > 0 && avgAccuracy >= threshold && completedEnough) {
       const nextLevel = levels[currentLevelIndex + 1]
       if (nextLevel) {
         unlockedLevelIds.add(nextLevel.id)
@@ -202,7 +225,31 @@ export function applyLessonResult(
       learned.add(word.toUpperCase())
     }
     reading.wordsLearned = [...learned]
+    if (result.skillIds && result.skillIds.length > 0) {
+      const independentCorrect = result.results.filter(isIndependentSuccess).length
+      reading.skills = recordSkillPractice(reading.skills ?? {}, result.skillIds, {
+        independentCorrect,
+        independentTotal: result.results.length,
+        assistedCorrect: result.results.filter((item) => item.correct && !isIndependentSuccess(item)).length,
+        at: new Date().toISOString(),
+      })
+    }
     stats = reading
+  } else if (usesMasteryGate(result.gameId)) {
+    const subject = { ...createEmptySubjectStats(), ...(stats as Partial<SubjectStats>) }
+    subject.lessonsCompleted += 1
+    subject.correctAnswers += result.results.filter((item) => item.correct).length
+    subject.totalAnswers += result.results.length
+    if (result.skillIds && result.skillIds.length > 0) {
+      const independentCorrect = result.results.filter(isIndependentSuccess).length
+      subject.skills = recordSkillPractice(subject.skills ?? {}, result.skillIds, {
+        independentCorrect,
+        independentTotal: result.results.length,
+        assistedCorrect: result.results.filter((item) => item.correct && !isIndependentSuccess(item)).length,
+        at: new Date().toISOString(),
+      })
+    }
+    stats = subject
   }
 
   if (result.gameId === 'typing') {

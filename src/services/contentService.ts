@@ -89,7 +89,7 @@ export function buildAdminReadingLessons(
       lessons.push({
         id: 'reading-admin-quiz',
         gameId: 'reading',
-        levelId: 'reading-l6',
+        levelId: 'reading-palabras',
         title: 'Quiz del admin',
         source: 'admin',
         activities: quizActivities,
@@ -100,7 +100,7 @@ export function buildAdminReadingLessons(
       lessons.push({
         id: 'reading-admin-practice',
         gameId: 'reading',
-        levelId: 'reading-l7',
+        levelId: 'reading-escritura',
         title: 'Práctica del admin',
         source: 'admin',
         activities: practiceActivities,
@@ -134,7 +134,7 @@ export function buildAdminReadingLessons(
     lessons.push({
       id: 'reading-admin-passages',
       gameId: 'reading',
-      levelId: 'reading-l8',
+      levelId: 'reading-historias',
       title: 'Historias del admin',
       source: 'admin',
       activities: passageActivities,

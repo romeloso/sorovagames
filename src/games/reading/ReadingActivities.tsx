@@ -1,5 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { ListenButton } from '@/components/reading/ListenButton'
+import { TracePad } from '@/components/reading/TracePad'
 import { Button } from '@/components/ui/Button'
+import { VirtualKeyboard } from '@/components/game/VirtualKeyboard'
+import { answersMatch } from '@/domain/reading/answers'
 import { cn } from '@/lib/cn'
 import type {
   Activity,
@@ -8,6 +12,8 @@ import type {
   LetterFromImageActivity,
   ReadingPracticeActivity,
   SyllableBuildActivity,
+  TokenOrderActivity,
+  TraceLetterActivity,
   WordBuildActivity,
   WordQuizActivity,
   WordSelectActivity,
@@ -271,7 +277,9 @@ function WordQuizView({
     <div className="space-y-6 text-center">
       <p className="text-lg font-bold text-ink-soft">{activity.prompt}</p>
       {activity.image ? <p className="text-7xl">{activity.image}</p> : null}
-      <p className="rounded-2xl bg-sand px-4 py-3 text-base font-bold text-ink">{activity.clue}</p>
+      {activity.clue && activity.clue !== activity.prompt ? (
+        <p className="rounded-2xl bg-sand px-4 py-3 text-base font-bold text-ink">{activity.clue}</p>
+      ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {activity.options.map((option) => {
           const isPicked = picked === option.value
@@ -347,7 +355,7 @@ function ReadingPracticeView({
     )
   }
 
-  const normalized = value.toUpperCase()
+  const normalized = value.normalize('NFC').toLocaleUpperCase('es')
   const feedback = answer.split('').map((char, index) => {
     const typed = normalized[index]
     if (!typed) return 'pending'
@@ -398,10 +406,26 @@ function ReadingPracticeView({
         <p className="font-bold text-teal">¡Perfecto! Así se escribe</p>
       ) : null}
 
+      <VirtualKeyboard
+        accents
+        allowSpace
+        onKey={(key) => {
+          if (key === 'BORRAR') {
+            setValue((current) => current.slice(0, -1))
+            return
+          }
+          if (key === 'ESPACIO') {
+            setValue((current) => `${current} `)
+            return
+          }
+          setValue((current) => `${current}${key}`)
+        }}
+      />
+
       <Button
         onClick={() =>
           onResolved({
-            correct: normalized === answer,
+            correct: answersMatch(normalized, answer),
             timeMs: Date.now() - started,
             typedChars: normalized.length,
             correctChars: feedback.filter((item) => item === 'ok').length,
@@ -415,6 +439,132 @@ function ReadingPracticeView({
   )
 }
 
+function TokenOrderView({
+  activity,
+  onResolved,
+}: {
+  activity: TokenOrderActivity
+  onResolved: Resolve
+}) {
+  const started = useMemo(() => Date.now(), [activity.id])
+  const [pool, setPool] = useState(() => activity.tokens.map((token, index) => ({ id: `${token}-${index}`, token })))
+  const [built, setBuilt] = useState<{ id: string; token: string }[]>([])
+
+  useEffect(() => {
+    setPool(activity.tokens.map((token, index) => ({ id: `${token}-${index}`, token })))
+    setBuilt([])
+  }, [activity.id, activity.tokens])
+
+  const value = built.map((item) => item.token).join(activity.separator)
+
+  return (
+    <div className="space-y-6 text-center">
+      <p className="text-lg font-bold text-ink-soft">{activity.prompt}</p>
+      {activity.image ? (
+        <p className="text-6xl" aria-hidden="true">
+          {activity.image}
+        </p>
+      ) : null}
+      {activity.imageAlt ? <p className="sr-only">{activity.imageAlt}</p> : null}
+      <div className="mx-auto flex min-h-20 flex-wrap items-center justify-center gap-2 rounded-3xl bg-cream p-4 ring-1 ring-ink/10">
+        {built.length === 0 ? (
+          <span className="font-semibold text-ink-soft">Toca las piezas en orden</span>
+        ) : (
+          built.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="rounded-2xl bg-teal px-4 py-3 font-display text-2xl font-bold text-white"
+              onClick={() => {
+                setBuilt((current) => current.filter((entry) => entry.id !== item.id))
+                setPool((current) => [...current, item])
+              }}
+            >
+              {item.token}
+            </button>
+          ))
+        )}
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {pool.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className="rounded-2xl bg-sun px-4 py-3 font-display text-2xl font-bold text-ink"
+            onClick={() => {
+              setPool((current) => current.filter((entry) => entry.id !== item.id))
+              setBuilt((current) => [...current, item])
+            }}
+          >
+            {item.token}
+          </button>
+        ))}
+      </div>
+      <Button
+        onClick={() =>
+          onResolved({
+            correct: answersMatch(value, activity.answer),
+            timeMs: Date.now() - started,
+          })
+        }
+        disabled={built.length === 0}
+      >
+        Comprobar
+      </Button>
+    </div>
+  )
+}
+
+function TraceLetterView({
+  activity,
+  onResolved,
+}: {
+  activity: TraceLetterActivity
+  onResolved: Resolve
+}) {
+  const started = useMemo(() => Date.now(), [activity.id])
+  const [typed, setTyped] = useState('')
+
+  useEffect(() => {
+    setTyped('')
+  }, [activity.id])
+
+  return (
+    <div className="space-y-5 text-center">
+      <p className="text-lg font-bold text-ink-soft">{activity.prompt}</p>
+      <p className="font-display text-6xl font-bold text-coral" aria-hidden="true">
+        {activity.letter}
+      </p>
+      <TracePad
+        letter={activity.letter}
+        checkpoints={activity.checkpoints}
+        onPass={() =>
+          onResolved({
+            correct: true,
+            timeMs: Date.now() - started,
+          })
+        }
+      />
+      <div className="rounded-2xl bg-sand/70 p-4">
+        <p className="mb-3 text-sm font-bold text-ink-soft">También puedes escribirla</p>
+        <VirtualKeyboard
+          accents
+          highlightKey={activity.letter}
+          onKey={(key) => {
+            if (key === 'BORRAR' || key === 'ESPACIO') return
+            setTyped(key)
+            onResolved({
+              correct: answersMatch(key, activity.letter),
+              timeMs: Date.now() - started,
+            })
+          }}
+        />
+        {typed ? <p className="mt-2 font-bold">Elegiste {typed}</p> : null}
+      </div>
+    </div>
+  )
+}
+
 export function ReadingActivityView({
   activity,
   onResolved,
@@ -422,22 +572,74 @@ export function ReadingActivityView({
   activity: Activity
   onResolved: Resolve
 }) {
+  const hints = useRef(0)
+
+  useEffect(() => {
+    hints.current = 0
+  }, [activity.id])
+
+  const resolve: Resolve = (partial) => {
+    onResolved({
+      ...partial,
+      hintsUsed: (partial.hintsUsed ?? 0) + hints.current,
+    })
+  }
+
+  let body: ReactNode
   switch (activity.kind) {
     case 'letter_choice':
-      return <LetterChoiceView activity={activity} onResolved={onResolved} />
+      body = <LetterChoiceView activity={activity} onResolved={resolve} />
+      break
     case 'letter_from_image':
-      return <LetterFromImageView activity={activity} onResolved={onResolved} />
+      body = <LetterFromImageView activity={activity} onResolved={resolve} />
+      break
     case 'syllable_build':
-      return <SyllableBuildView activity={activity} onResolved={onResolved} />
+      body = <SyllableBuildView activity={activity} onResolved={resolve} />
+      break
     case 'word_select':
-      return <WordSelectView activity={activity} onResolved={onResolved} />
+      body = <WordSelectView activity={activity} onResolved={resolve} />
+      break
     case 'word_build':
-      return <WordBuildView key={activity.id} activity={activity} onResolved={onResolved} />
+      body = <WordBuildView key={activity.id} activity={activity} onResolved={resolve} />
+      break
     case 'word_quiz':
-      return <WordQuizView key={activity.id} activity={activity} onResolved={onResolved} />
+      body = <WordQuizView key={activity.id} activity={activity} onResolved={resolve} />
+      break
     case 'reading_practice':
-      return <ReadingPracticeView key={activity.id} activity={activity} onResolved={onResolved} />
+      body = <ReadingPracticeView key={activity.id} activity={activity} onResolved={resolve} />
+      break
+    case 'token_order':
+      body = <TokenOrderView key={activity.id} activity={activity} onResolved={resolve} />
+      break
+    case 'trace_letter':
+      body = <TraceLetterView key={activity.id} activity={activity} onResolved={resolve} />
+      break
     default:
-      return <p>Esta actividad aún no está disponible.</p>
+      body = <p>Esta actividad es de otro juego.</p>
   }
+
+  return (
+    <div className="space-y-4">
+      {activity.speak ? <ListenButton text={activity.speak} /> : null}
+      {activity.hint ? (
+        <div className="text-center">
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={() => {
+              hints.current += 1
+              const node = document.getElementById(`hint-${activity.id}`)
+              if (node) node.hidden = false
+            }}
+          >
+            Pista
+          </Button>
+          <p id={`hint-${activity.id}`} hidden className="mt-2 font-semibold text-ink-soft">
+            {activity.hint}
+          </p>
+        </div>
+      ) : null}
+      {body}
+    </div>
+  )
 }

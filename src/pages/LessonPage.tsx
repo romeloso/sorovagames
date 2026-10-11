@@ -7,6 +7,7 @@ import { useApp } from '@/context/AppContext'
 import { getGameBySlug } from '@/data/games/registry'
 import { getReadingLesson } from '@/data/games/reading/levels'
 import { getTypingLesson } from '@/data/games/typing/levels'
+import { getSubjectLesson } from '@/data/subjects/catalog'
 import { ReadingActivityView } from '@/games/reading/ReadingActivities'
 import { TypingActivityView } from '@/games/typing/TypingActivities'
 import { ageFromBirthDate } from '@/lib/age'
@@ -38,7 +39,7 @@ function computeWpm(results: ActivityAttemptResult[], durationMs: number) {
 export function LessonPage() {
   const { gameSlug, lessonId } = useParams()
   const navigate = useNavigate()
-  const { activeProfile, completeLesson, state } = useApp()
+  const { ready, activeProfile, completeLesson, state } = useApp()
   const [finished, setFinished] = useState<{
     result: LessonSessionResult
     reward: RewardPayload
@@ -55,9 +56,16 @@ export function LessonPage() {
     if (!lessonId || !game) return undefined
     if (game.id === 'reading') return getReadingLesson(lessonId, state.contentBank, age, grade)
     if (game.id === 'typing') return getTypingLesson(lessonId)
-    return undefined
+    return getSubjectLesson(game.id, lessonId)
   }, [age, game, grade, lessonId, state.contentBank])
 
+  if (!ready) {
+    return (
+      <PageShell>
+        <p className="font-display text-2xl font-bold">Cargando…</p>
+      </PageShell>
+    )
+  }
   if (!activeProfile) return <Navigate to="/" replace />
   if (!game || !lesson) {
     return (
@@ -79,10 +87,10 @@ export function LessonPage() {
         lesson={lesson}
         onExit={() => navigate(`/games/${game.slug}`)}
         renderActivity={({ activity, onResolved }) =>
-          game.id === 'reading' ? (
-            <ReadingActivityView activity={activity} onResolved={onResolved} />
-          ) : (
+          game.id === 'typing' ? (
             <TypingActivityView activity={activity} onResolved={onResolved} />
+          ) : (
+            <ReadingActivityView activity={activity} onResolved={onResolved} />
           )
         }
         onComplete={(results, durationMs) => {
@@ -104,6 +112,9 @@ export function LessonPage() {
               const practice = activity as ReadingPracticeActivity
               if (practice.mode === 'type') words.push(practice.answer)
             }
+            if (activity.kind === 'token_order' && activity.separator === '') {
+              words.push(activity.answer)
+            }
           }
 
           const session: LessonSessionResult = {
@@ -116,6 +127,7 @@ export function LessonPage() {
             durationMs,
             wpm: game.id === 'typing' ? computeWpm(results, durationMs) : undefined,
             words,
+            skillIds: lesson.skillIds,
           }
 
           session.stars =
