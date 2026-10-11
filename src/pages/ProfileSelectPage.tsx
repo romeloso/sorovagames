@@ -52,6 +52,10 @@ export function ProfileSelectPage() {
           noValidate
           onSubmit={(event) => {
             event.preventDefault()
+            if (!code.trim()) {
+              setError('Escribe tu código.')
+              return
+            }
             const result = loginChild(code)
             if (!result.ok) {
               setError(result.error ?? 'No encontramos ese código.')

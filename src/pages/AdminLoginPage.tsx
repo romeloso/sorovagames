@@ -35,6 +35,10 @@ export function StaffLoginPage({ mode }: { mode: 'tutor' | 'superadmin' }) {
           noValidate
           onSubmit={(event: FormEvent) => {
             event.preventDefault()
+            if (!secret.trim()) {
+              setError('Escribe el PIN.')
+              return
+            }
             const result = loginSuperadmin(secret)
             if (!result.ok) {
               setError(result.error ?? 'No se pudo entrar.')

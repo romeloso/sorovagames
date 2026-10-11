@@ -25,6 +25,10 @@ export function TutorAccessModule() {
 
   function onLogin(event: FormEvent) {
     event.preventDefault()
+    if (!code.trim()) {
+      setError('Escribe tu código de tutor.')
+      return
+    }
     const result = loginTutor(code)
     if (!result.ok) setError(result.error ?? 'No se pudo entrar.')
   }
