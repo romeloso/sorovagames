@@ -1,8 +1,11 @@
+import { AnimatedAvatar } from '@/components/profile/AnimatedAvatar'
 import { cn } from '@/lib/cn'
+import type { AvatarLook } from '@/domain/avatarLook'
 
 export function Avatar({
   name,
   src,
+  look,
   size = 'lg',
   className,
   accent = '#0f9b8e',
@@ -10,6 +13,7 @@ export function Avatar({
 }: {
   name: string
   src: string
+  look?: AvatarLook | null
   size?: 'sm' | 'md' | 'lg' | 'xl'
   className?: string
   accent?: string
@@ -32,15 +36,19 @@ export function Avatar({
       )}
       style={{ boxShadow: `0 0 0 3px ${accent}55` }}
     >
-      <img
-        src={src}
-        alt={`Avatar de ${name}`}
-        className={cn(
-          'h-full w-full scale-[1.08] object-cover',
-          focus === 'center' ? 'object-center' : 'object-top',
-        )}
-        draggable={false}
-      />
+      {look ? (
+        <AnimatedAvatar look={look} title={`Avatar de ${name}`} />
+      ) : (
+        <img
+          src={src}
+          alt={`Avatar de ${name}`}
+          className={cn(
+            'h-full w-full scale-[1.08] object-cover',
+            focus === 'center' ? 'object-center' : 'object-top',
+          )}
+          draggable={false}
+        />
+      )}
     </span>
   )
 }
