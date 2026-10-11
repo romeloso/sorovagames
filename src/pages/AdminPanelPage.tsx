@@ -11,6 +11,8 @@ import { useApp } from '@/context/AppContext'
 import { visibleChildProfiles } from '@/domain/accessCode'
 import { buildChildDirectory } from '@/domain/childDirectory'
 import { ChildDirectoryTable } from '@/components/admin/ChildDirectoryTable'
+import { ProgressDashboard } from '@/components/admin/ProgressDashboard'
+import { buildProgressDashboard } from '@/domain/progressDashboard'
 import { countLeoActivities } from '@/data/games/reading/curriculum'
 import { READING_WORLDS } from '@/data/games/reading/levels'
 import { countSubjectActivities, getSubjectLevels, SUBJECT_GAME_IDS } from '@/data/subjects/catalog'
@@ -143,6 +145,10 @@ export function AdminPanelPage() {
   const tutors = useMemo(() => Object.values(state.tutors), [state.tutors])
   const directoryRows = useMemo(
     () => buildChildDirectory(profiles, tutors, state.progress),
+    [profiles, state.progress, tutors],
+  )
+  const progressRows = useMemo(
+    () => buildProgressDashboard(profiles, tutors, state.progress),
     [profiles, state.progress, tutors],
   )
   const editorProfiles = isSuperadmin
@@ -793,7 +799,9 @@ export function AdminPanelPage() {
         </div>
       ) : null}
 
-      {tab === 'progress' ? (
+      {tab === 'progress' && isSuperadmin ? <ProgressDashboard rows={progressRows} tutors={tutors} /> : null}
+
+      {tab === 'progress' && !isSuperadmin ? (
         <div className="grid gap-4 lg:grid-cols-3">
           {profiles.map((profile) => {
             const reading = getGameProgress('reading', profile.id)

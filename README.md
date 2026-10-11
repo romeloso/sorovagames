@@ -66,7 +66,7 @@ El código del niño identifica el perfil en esta instalación. No es una contra
 4. Pestaña **Niños**: nombre, fecha y código de acceso
 5. Pestaña **Temas**: temas por materia con rango de edad
 6. Pestaña **Avatares**: galería central de fotos/avatares
-7. Pestaña **Progreso**: avance de cada niño a cargo
+7. Pestaña **Progreso**: el superadministrador ve un tablero con tabla filtrable (nivel, edad, grado, XP, monedas, racha, logros, lectura y tecleo, sin foto). El tutor ve la tarjeta de cada niño.
 8. Pestaña **Material**: palabras/quizzes e historias (también con edad)
 
 ## Cómo agregar una materia
