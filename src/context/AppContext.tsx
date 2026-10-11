@@ -15,6 +15,7 @@ import {
   childAccessCode,
   createTutorAccessCode,
   normalizeAccessCode,
+  normalizePersonName,
   normalizeSessionRole,
   ownsChild,
   removeTutorAccount,
@@ -86,6 +87,7 @@ interface AppContextValue {
   loginSuperadmin: (pin: string) => { ok: boolean; error?: string }
   logoutStaff: () => void
   addTutor: (name: string) => TutorAccount
+  registerTutor: (name: string) => TutorAccount
   setTutorActive: (tutorId: string, active: boolean) => void
   regenerateTutorCode: (tutorId: string) => string | null
   removeTutor: (tutorId: string) => {
@@ -417,6 +419,30 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }))
     return tutor
   }, [state.sessionRole, state.tutors])
+
+  const registerTutor = useCallback((name: string) => {
+    const limit = consumeRateLimit('registerTutor')
+    if (!limit.allowed) {
+      throw new Error(limit.reason ?? 'Límite de registros alcanzado')
+    }
+    const clean = name.trim()
+    if (normalizePersonName(clean).length < 2) {
+      throw new Error('Escribe tu nombre con al menos dos letras.')
+    }
+    const taken = new Set(Object.values(state.tutors).map((tutor) => tutor.accessCode))
+    const tutor: TutorAccount = {
+      id: `tutor-${crypto.randomUUID().slice(0, 8)}`,
+      name: clean,
+      accessCode: createTutorAccessCode(clean, taken),
+      active: true,
+      createdAt: new Date().toISOString(),
+    }
+    setState((prev) => ({
+      ...prev,
+      tutors: { ...prev.tutors, [tutor.id]: tutor },
+    }))
+    return tutor
+  }, [state.tutors])
 
   const setTutorActive = useCallback((tutorId: string, active: boolean) => {
     if (state.sessionRole !== 'superadmin') return
@@ -920,6 +946,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       loginSuperadmin,
       logoutStaff,
       addTutor,
+      registerTutor,
       setTutorActive,
       regenerateTutorCode,
       removeTutor,
@@ -956,6 +983,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       loginSuperadmin,
       logoutStaff,
       addTutor,
+      registerTutor,
       setTutorActive,
       regenerateTutorCode,
       removeTutor,

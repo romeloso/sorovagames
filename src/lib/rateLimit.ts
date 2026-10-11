@@ -31,6 +31,7 @@ export type RateLimitAction =
   | 'avatarUpload'
   | 'addChild'
   | 'addContent'
+  | 'registerTutor'
   | 'saveState'
 
 export const RATE_LIMIT_RULES: Record<RateLimitAction, RateLimitRule> = {
@@ -38,6 +39,7 @@ export const RATE_LIMIT_RULES: Record<RateLimitAction, RateLimitRule> = {
   avatarUpload: { limit: 10, windowMs: 60_000, lockoutMs: 30_000 },
   addChild: { limit: 20, windowMs: 60_000 },
   addContent: { limit: 30, windowMs: 60_000 },
+  registerTutor: { limit: 5, windowMs: 60_000, lockoutMs: 60_000 },
   saveState: { limit: 120, windowMs: 60_000 },
 }
 
